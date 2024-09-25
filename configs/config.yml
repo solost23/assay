@@ -1,0 +1,21 @@
+name: "assay"
+version: "0.0.1"
+mode: "debug"
+port: 8083
+time_location: "Asia/Shanghai"
+
+mysql:
+  dsn: "root:123@tcp(localhost:3306)/assay?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai"
+  max_open_conn: 20
+  max_idle_conn: 10
+  max_conn_life_time: 100
+  
+redis:
+  addr: "localhost:6379"
+  password: ""
+  
+jwt:
+  key: "D#IPy!JRyyG4@WcrTOpgcNw8x6VF@R"
+  salt: "!dRtGP-zwwU98dh)%+vyN3~yyZm=96"
+  duration: 2678400
+  
