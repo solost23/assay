@@ -1,6 +1,10 @@
 package routers
 
-import "github.com/gin-gonic/gin"
+import (
+	"assay/middlewares"
+
+	"github.com/gin-gonic/gin"
+)
 
 func Register() *gin.Engine {
 	router := gin.Default()
@@ -9,7 +13,12 @@ func Register() *gin.Engine {
 	})
 
 	apiGroup := router.Group("api/assay")
-	apiGroup.Use()
+	{
+		InitLoginRouter(apiGroup)
+	}
+	apiGroup.Use(
+		middlewares.JWTAuth(),
+	)
 	{
 		InitRoleRouter(apiGroup)
 		InitUserRouter(apiGroup)
