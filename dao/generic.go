@@ -50,3 +50,31 @@ func GWhereFirstSelect[T any](db *gorm.DB, columns string, query string, args ..
 	err := q.First(&result).Error
 	return &result, err
 }
+
+func GWhereAllSelectOrder[T any](db *gorm.DB, columns string, order string, query string, args ...any) ([]T, error) {
+	return gWhereAllSelectOrderLimit[T](db, columns, order, 0, query, args...)
+}
+
+func gWhereAllSelectOrderLimit[T any](db *gorm.DB, columns string, order string, limit int, query string, args ...any) ([]T, error) {
+	var results []T
+	var t T
+	q := db.Model(t)
+
+	if order != "" {
+		q = q.Order(order)
+	}
+
+	if columns != "" && columns != "*" {
+		q = q.Select(columns)
+	}
+	q = q.Where(query, args...)
+	if limit > 0 {
+		q = q.Limit(limit)
+	}
+	err := q.Find(&results).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
