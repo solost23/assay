@@ -15,6 +15,8 @@ func Register() *gin.Engine {
 	apiGroup := router.Group("api/assay")
 	{
 		InitLoginRouter(apiGroup)
+		// 上位机状态同步
+		InitComputerRouter(apiGroup)
 	}
 	apiGroup.Use(
 		middlewares.JWTAuth(),
