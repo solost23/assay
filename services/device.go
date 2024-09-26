@@ -16,7 +16,7 @@ import (
 type DeviceService struct{}
 
 func (*DeviceService) Status(c *gin.Context) {
-	conn, err := websocket.Upgrade(c.Writer, c.Request, c.Request.Header, 1024, 1024)
+	conn, err := websocket.Upgrade(c.Writer, c.Request, nil, 1024, 1024)
 	if err != nil {
 		response.Error(c, constant.InternalServerErrorCode, err)
 		return
