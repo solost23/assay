@@ -26,6 +26,7 @@ func Register() *gin.Engine {
 		InitUserRouter(apiGroup)
 		// 设备状态同步
 		InitDeviceRouter(apiGroup)
+		InitAlarmRouter(apiGroup)
 	}
 
 	return router

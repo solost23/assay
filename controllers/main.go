@@ -8,4 +8,5 @@ var (
 	loginService    services.LoginService
 	deviceService   services.DeviceService
 	computerService services.ComputerService
+	alarmService    services.AlarmService
 )

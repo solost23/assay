@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	if err := global.DB.AutoMigrate(&dao.Role{}, &dao.User{}, &dao.Device{}); err != nil {
+	if err := global.DB.AutoMigrate(&dao.Role{}, &dao.User{}, &dao.Device{}, &dao.Alarm{}); err != nil {
 		zap.S().Panic("failed to migrate database: ", err)
 	}
 
