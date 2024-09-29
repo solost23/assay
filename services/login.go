@@ -113,6 +113,9 @@ func (*LoginService) SendCode(c *gin.Context, params *forms.SendCodeForm) {
 		Name:        catConfig.Name,
 		Baud:        catConfig.Baud,
 		ReadTimeout: time.Duration(catConfig.ReadTimeout) * time.Millisecond,
+		Size:        catConfig.Size,
+		Parity:      serial.Parity(catConfig.Parity),
+		StopBits:    serial.StopBits(catConfig.StopBits),
 	})
 	if err != nil {
 		response.Error(c, constant.InternalServerErrorCode, err)

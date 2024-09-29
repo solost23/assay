@@ -34,4 +34,7 @@ type CatConfig struct {
 	Name        string `mapstructure:"name"`
 	Baud        int    `mapstructure:"baud"`
 	ReadTimeout int64  `mapstructure:"read_timeout"`
+	Size        byte   `mapstructure:"size"`
+	StopBits    byte   `mapstructure:"stop_bits"`
+	Parity      byte   `mapstructure:"parity"`
 }
