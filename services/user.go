@@ -67,6 +67,44 @@ func (*UserService) Delete(c *gin.Context, id uint) {
 	response.Success(c, "success")
 }
 
+func (*UserService) Update(c *gin.Context, id uint, params *forms.UserInsertForm) {
+	db := global.DB
+
+	sqlUser, err := dao.GWhereFirstSelect[dao.User](db, "id", "id = ?", id)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		response.Error(c, constant.BadRequestCode, errors.New("用户不存在，参数错误"))
+		return
+	}
+
+	_, err = dao.GWhereFirstSelect[dao.Role](db, "id", "id = ?", params.RoleId)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		response.Error(c, constant.BadRequestCode, errors.New("角色不存在，参数错误"))
+		return
+	}
+
+	sqlUser.Username = params.Username
+	sqlUser.Password = util.NewMd5(params.Password, constant.Secret)
+	sqlUser.Nickname = params.Nickname
+	sqlUser.Phone = params.Phone
+	sqlUser.Email = params.Email
+	sqlUser.RoleId = params.RoleId
+
+	if err := dao.GSave[dao.User](db, sqlUser, "id = ?", id); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+
+	response.Success(c, "success")
+}
+
 func (*UserService) List(c *gin.Context, params *forms.UserListForm) {
 	db := global.DB
 
@@ -85,6 +123,20 @@ func (*UserService) List(c *gin.Context, params *forms.UserListForm) {
 		return
 	}
 
+	roleIds := make([]uint, 0, len(sqlUsers))
+	for i := 0; i != len(sqlUsers); i++ {
+		roleIds = append(roleIds, sqlUsers[i].RoleId)
+	}
+	sqlRoles, err := dao.GWhereAllSelectOrder[dao.Role](db, "id, name", "id DESC", "id IN ?", roleIds)
+	if err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+	roleIdMap := make(map[uint]string, len(sqlRoles))
+	for i := 0; i != len(sqlRoles); i++ {
+		roleIdMap[sqlRoles[i].ID] = sqlRoles[i].Name
+	}
+
 	records := make([]forms.UserListRecord, 0, len(sqlUsers))
 	for i := 0; i != len(sqlUsers); i++ {
 		records = append(records, forms.UserListRecord{
@@ -93,6 +145,7 @@ func (*UserService) List(c *gin.Context, params *forms.UserListForm) {
 			Nickname:  sqlUsers[i].Nickname,
 			Phone:     sqlUsers[i].Phone,
 			Email:     sqlUsers[i].Email,
+			Role:      roleIdMap[sqlUsers[i].RoleId],
 			UpdatedAt: sqlUsers[i].UpdatedAt.Format(time.DateTime),
 		})
 	}
