@@ -9,13 +9,16 @@ import (
 	"assay/infra/middleware"
 	"assay/infra/response"
 	"assay/infra/util"
+	"assay/infra/util/utf8togbk"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/tarm/serial"
 	"gorm.io/gorm"
 )
 
@@ -60,7 +63,7 @@ func loginInitUserToken(c *gin.Context, user *dao.User, platform string) (string
 	var redisPrefix string
 	switch platform {
 	case "assay":
-		redisPrefix = constants.AssayRedisPrefix
+		redisPrefix = constants.AssayLoginRedisPrefix
 	}
 	token, err := loginGetToken(user.ID, redisPrefix)
 	if err != nil {
@@ -101,4 +104,39 @@ func loginGetToken(userId uint, redisPrefix string) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (*LoginService) SendCode(c *gin.Context, params *forms.SendCodeForm) {
+	catConfig := global.ServerConfig.Cat
+
+	s, err := serial.OpenPort(&serial.Config{
+		Name:        catConfig.Name,
+		Baud:        catConfig.Baud,
+		ReadTimeout: time.Duration(catConfig.ReadTimeout) * time.Millisecond,
+	})
+	if err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+	defer s.Close()
+
+	code := util.GenerateRandCode()
+	data := fmt.Sprintf("#%s#%s#", params.Phone, fmt.Sprintf("【北方稀土】您的验证码是%s，在15分钟内有效。如非本人操作请忽略本短信。", code))
+	b, err := utf8togbk.UTF8ToGBK([]byte(data))
+	if err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+	if _, err = s.Write(b); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+
+	rdb := global.RDB
+	if err := rdb.Set(c, constants.AssayVerifyCodeRedisPrefix+params.Phone, code, time.Duration(15)*time.Minute).Err(); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+
+	response.Success(c, "success")
 }

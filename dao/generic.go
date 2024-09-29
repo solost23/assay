@@ -16,6 +16,11 @@ func GDelete[T any](db *gorm.DB, query string, args ...any) error {
 	return db.Model(t).Where(query, args...).Delete(&t).Error
 }
 
+func GSave[T any](db *gorm.DB, data any, query string, args ...any) error {
+	var t T
+	return db.Model(t).Where(query, args...).Save(data).Error
+}
+
 func GPaginateOrder[T any](db *gorm.DB, params *ListPageInput, order, query string, args ...any) ([]T, int64, int64, error) {
 	var t T
 	var results []T
