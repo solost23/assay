@@ -22,6 +22,7 @@ type UserList struct {
 }
 
 type UserListRecord struct {
+	ID        uint   `json:"id"`
 	Username  string `json:"username"`
 	Nickname  string `json:"nickname"`
 	Phone     string `json:"phone"`

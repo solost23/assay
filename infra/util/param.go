@@ -12,7 +12,7 @@ func DefaultGetValidParams(c *gin.Context, params any) error {
 }
 
 func GetValidUriParams(c *gin.Context, params any) error {
-	if err := c.ShouldBind(params); err != nil {
+	if err := c.ShouldBindUri(params); err != nil {
 		return err
 	}
 	return nil

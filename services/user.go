@@ -58,6 +58,15 @@ func (*UserService) Insert(c *gin.Context, params *forms.UserInsertForm) {
 	response.Success(c, "success")
 }
 
+func (*UserService) Delete(c *gin.Context, id uint) {
+	db := global.DB
+	if err := dao.GDelete[dao.User](db, "id = ?", id); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+	response.Success(c, "success")
+}
+
 func (*UserService) List(c *gin.Context, params *forms.UserListForm) {
 	db := global.DB
 
@@ -79,6 +88,7 @@ func (*UserService) List(c *gin.Context, params *forms.UserListForm) {
 	records := make([]forms.UserListRecord, 0, len(sqlUsers))
 	for i := 0; i != len(sqlUsers); i++ {
 		records = append(records, forms.UserListRecord{
+			ID:        sqlUsers[i].ID,
 			Username:  sqlUsers[i].Username,
 			Nickname:  sqlUsers[i].Nickname,
 			Phone:     sqlUsers[i].Phone,

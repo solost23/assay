@@ -11,6 +11,11 @@ func GInsert[T any](db *gorm.DB, data T) error {
 	return db.Create(data).Error
 }
 
+func GDelete[T any](db *gorm.DB, query string, args ...any) error {
+	var t T
+	return db.Model(t).Where(query, args...).Delete(&t).Error
+}
+
 func GPaginateOrder[T any](db *gorm.DB, params *ListPageInput, order, query string, args ...any) ([]T, int64, int64, error) {
 	var t T
 	var results []T
