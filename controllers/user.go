@@ -16,6 +16,8 @@ func UserRegister(router *gin.RouterGroup) {
 
 	// 用户添加
 	router.POST("", controller.insert)
+	// 用户删除
+	router.DELETE(":id", controller.delete)
 	// 用户列表
 	router.GET("", controller.list)
 }
@@ -28,6 +30,16 @@ func (*UserController) insert(c *gin.Context) {
 	}
 
 	userService.Insert(c, params)
+}
+
+func (*UserController) delete(c *gin.Context) {
+	uIdForm := &constant.UIdForm{}
+	if err := util.GetValidUriParams(c, uIdForm); err != nil {
+		response.Error(c, constant.BadRequestCode, err)
+		return
+	}
+
+	userService.Delete(c, uIdForm.Id)
 }
 
 func (*UserController) list(c *gin.Context) {
