@@ -9,6 +9,7 @@ type ServerConfig struct {
 	MySQL        MySQLConfig `mapstructure:"mysql"`
 	Redis        RedisConfig `mapstructure:"redis"`
 	JWT          JWTConfig   `mapstructure:"jwt"`
+	Cat          CatConfig   `mapstructure:"cat"`
 }
 
 type MySQLConfig struct {
@@ -27,4 +28,10 @@ type JWTConfig struct {
 	Key      string `mapstructure:"key"`
 	Salt     string `mapstructure:"salt"`
 	Duration int64  `mapstructure:"duration"`
+}
+
+type CatConfig struct {
+	Name        string `mapstructure:"name"`
+	Baud        int    `mapstructure:"baud"`
+	ReadTimeout int64  `mapstructure:"read_timeout"`
 }

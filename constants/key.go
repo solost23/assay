@@ -1,7 +1,9 @@
 package constants
 
 const (
-	LoginRedisPrefix = "login_"
+	LoginRedisPrefix      = "login_"
+	VerifyCodeRedisPrefix = "verify_code_"
 
-	AssayRedisPrefix = LoginRedisPrefix + "assay_"
+	AssayLoginRedisPrefix      = LoginRedisPrefix + "assay_"
+	AssayVerifyCodeRedisPrefix = VerifyCodeRedisPrefix + "assay_"
 )

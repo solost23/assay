@@ -16,6 +16,8 @@ func LoginRegister(router *gin.RouterGroup) {
 
 	// 登陆
 	router.POST("", controller.login)
+	// 短信猫发送随机4位验证码
+	router.POST("code", controller.sendCode)
 }
 
 func (*LoginController) login(c *gin.Context) {
@@ -26,4 +28,14 @@ func (*LoginController) login(c *gin.Context) {
 	}
 
 	loginService.Login(c, params)
+}
+
+func (*LoginController) sendCode(c *gin.Context) {
+	params := &forms.SendCodeForm{}
+	if err := util.DefaultGetValidParams(c, params); err != nil {
+		response.Error(c, constant.BadRequestCode, err)
+		return
+	}
+
+	loginService.SendCode(c, params)
 }

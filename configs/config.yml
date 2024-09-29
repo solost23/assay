@@ -18,4 +18,9 @@ jwt:
   key: "D#IPy!JRyyG4@WcrTOpgcNw8x6VF@R"
   salt: "!dRtGP-zwwU98dh)%+vyN3~yyZm=96"
   duration: 2678400
+
+Cat:
+  name: "COM3"
+  baud: 115200
+  read_timeout: 500 # ms
   
