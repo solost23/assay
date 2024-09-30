@@ -16,6 +16,6 @@ type Login struct {
 	dao.User
 }
 
-type SendCodeForm struct {
-	Phone string `json:"phone" binding:"required,len=11"`
+type LoginGetCodeForm struct {
+	Phone string `form:"phone" binding:"required,len=11"`
 }

@@ -18,6 +18,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/redis/go-redis/v9"
 	"github.com/tarm/serial"
 	"gorm.io/gorm"
 )
@@ -35,16 +36,39 @@ func (*LoginService) Login(c *gin.Context, params *forms.LoginForm) {
 	switch params.Type {
 	case 0:
 		sqlUser, err = dao.GWhereFirstSelect[dao.User](db, "*", "username = ? AND password = ?", params.Username, util.NewMd5(params.Password, constant.Secret))
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			response.Error(c, constant.InternalServerErrorCode, err)
+			return
+		}
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			response.Error(c, constant.BadRequestCode, errors.New("用户名或密码错误"))
+			return
+		}
 	case 1:
 		// 对比redis中的短信验证码，然后去数据库拿到用户信息
-	}
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		response.Error(c, constant.InternalServerErrorCode, err)
-		return
-	}
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		response.Error(c, constant.BadRequestCode, errors.New("用户名或密码错误"))
-		return
+		rdb := global.RDB
+		code, err := rdb.Get(c, constants.AssayVerifyCodeRedisPrefix+params.Phone).Result()
+		if err != nil && !errors.Is(err, redis.Nil) {
+			response.Error(c, constant.InternalServerErrorCode, err)
+			return
+		}
+		if errors.Is(err, redis.Nil) {
+			response.Error(c, constant.InternalServerErrorCode, errors.New("验证码已过期"))
+			return
+		}
+		if code != params.Code {
+			response.Error(c, constant.InternalServerErrorCode, errors.New("验证码错误"))
+			return
+		}
+		sqlUser, err = dao.GWhereFirstSelect[dao.User](db, "*", "phone = ?", params.Phone)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			response.Error(c, constant.InternalServerErrorCode, err)
+			return
+		}
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			response.Error(c, constant.BadRequestCode, errors.New("手机号不存在"))
+			return
+		}
 	}
 
 	token, err := loginInitUserToken(c, sqlUser, params.PlatForm)
@@ -106,7 +130,7 @@ func loginGetToken(userId uint, redisPrefix string) (string, error) {
 	return token, nil
 }
 
-func (*LoginService) SendCode(c *gin.Context, params *forms.SendCodeForm) {
+func (*LoginService) Code(c *gin.Context, params *forms.LoginGetCodeForm) {
 	catConfig := global.ServerConfig.Cat
 
 	s, err := serial.OpenPort(&serial.Config{
