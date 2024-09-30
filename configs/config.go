@@ -10,6 +10,7 @@ type ServerConfig struct {
 	Redis        RedisConfig `mapstructure:"redis"`
 	JWT          JWTConfig   `mapstructure:"jwt"`
 	Cat          CatConfig   `mapstructure:"cat"`
+	Mqtt         MqttConfig  `mapstructure:"mqtt"`
 }
 
 type MySQLConfig struct {
@@ -37,4 +38,11 @@ type CatConfig struct {
 	Size        byte   `mapstructure:"size"`
 	StopBits    byte   `mapstructure:"stop_bits"`
 	Parity      byte   `mapstructure:"parity"`
+}
+
+type MqttConfig struct {
+	Addr     string `mapstructure:"addr"`
+	Quiesce  uint   `mapstructure:"quiesce"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
 }

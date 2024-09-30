@@ -26,4 +26,10 @@ Cat:
   size: 8
   stop_bits: 1
   parity: 78 # 'N' 
+
+mqtt:
+  addr: "localhost:1883"
+  quiesce: 250 # ms
+  username: ""
+  password: ""
   
