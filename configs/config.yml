@@ -23,4 +23,7 @@ Cat:
   name: "COM3"
   baud: 115200
   read_timeout: 500 # ms
+  size: 8
+  stop_bits: 1
+  parity: 78 # 'N' 
   
