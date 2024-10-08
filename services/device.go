@@ -37,10 +37,10 @@ func (*DeviceService) Insert(c *gin.Context, params *forms.DeviceInsertForm) {
 		Host:     params.Host,
 		Name:     params.Name,
 		Port:     params.Port,
-		Protocol: params.Protocl,
+		Protocol: params.Protocol,
 		Status:   dao.DeviceStatusFree,
 	}
-	if err := dao.GInsert(db, sqlDevice); err != nil {
+	if err = dao.GInsert(db, sqlDevice); err != nil {
 		response.Error(c, constant.InternalServerErrorCode, err)
 		return
 	}
@@ -70,6 +70,45 @@ func (*DeviceService) Insert(c *gin.Context, params *forms.DeviceInsertForm) {
 		return
 	}
 
+	response.Success(c, "success")
+}
+
+func (*DeviceService) Delete(c *gin.Context, id uint) {
+	db := global.DB
+
+	if err := dao.GDelete[dao.Device](db, "id = ?", id); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+
+	// TODO: mqtt
+	response.Success(c, "success")
+}
+
+func (*DeviceService) Update(c *gin.Context, id uint, params *forms.DeviceInsertForm) {
+	db := global.DB
+
+	sqlDevice, err := dao.GWhereFirstSelect[dao.Device](db, "*", "id = ?", id)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		response.Error(c, constant.BadRequestCode, errors.New("设备不存在，参数错误"))
+		return
+	}
+
+	sqlDevice.Name = params.Name
+	sqlDevice.Host = params.Host
+	sqlDevice.Port = params.Port
+	sqlDevice.Protocol = params.Protocol
+
+	if err = dao.GSave[dao.Device](db, sqlDevice, "id = ?", id); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+
+	// TODO: 同步 mqtt
 	response.Success(c, "success")
 }
 
