@@ -1,5 +1,5 @@
 package constants
 
 const (
-	AssayDeviceInsertTopic = "assay_device_insert_topic"
+	AssayDeviceTopic = "assay_device_topic"
 )

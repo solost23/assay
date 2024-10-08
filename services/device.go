@@ -1,19 +1,16 @@
 package services
 
 import (
-	"assay/constants"
 	"assay/dao"
 	"assay/forms"
 	"assay/infra/constant"
 	"assay/infra/global"
 	"assay/infra/response"
-	"encoding/json"
+	"assay/services/servants"
 	"errors"
 	"time"
 
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -45,27 +42,8 @@ func (*DeviceService) Insert(c *gin.Context, params *forms.DeviceInsertForm) {
 		return
 	}
 
-	// 发送到mqtt server
-	mqttConfig := global.ServerConfig.Mqtt
-
-	opts := mqtt.NewClientOptions().
-		AddBroker(mqttConfig.Addr).
-		SetClientID(uuid.New().String()).
-		SetUsername(mqttConfig.Username).
-		SetPassword(mqttConfig.Password)
-
-	client := mqtt.NewClient(opts)
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		response.Error(c, constant.InternalServerErrorCode, err)
-		return
-	}
-	defer client.Disconnect(mqttConfig.Quiesce)
-	b, err := json.Marshal(sqlDevice)
-	if err != nil {
-		response.Error(c, constant.InternalServerErrorCode, err)
-		return
-	}
-	if token := client.Publish(constants.AssayDeviceInsertTopic, 1, false, b); token.Wait() && token.Error() != nil {
+	// TODO: 暂时不做成异步发送
+	if err = servants.PublishDevices(); err != nil {
 		response.Error(c, constant.InternalServerErrorCode, err)
 		return
 	}
@@ -81,7 +59,10 @@ func (*DeviceService) Delete(c *gin.Context, id uint) {
 		return
 	}
 
-	// TODO: mqtt
+	if err := servants.PublishDevices(); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
 	response.Success(c, "success")
 }
 
@@ -108,7 +89,10 @@ func (*DeviceService) Update(c *gin.Context, id uint, params *forms.DeviceInsert
 		return
 	}
 
-	// TODO: 同步 mqtt
+	if err = servants.PublishDevices(); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
 	response.Success(c, "success")
 }
 
