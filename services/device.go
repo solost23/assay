@@ -1,19 +1,18 @@
 package services
 
 import (
-	"assay/constants"
 	"assay/dao"
 	"assay/forms"
 	"assay/infra/constant"
 	"assay/infra/global"
 	"assay/infra/response"
-	"encoding/json"
+	"assay/services/servants"
 	"errors"
+	"fmt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"time"
 
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -37,39 +36,65 @@ func (*DeviceService) Insert(c *gin.Context, params *forms.DeviceInsertForm) {
 		Host:     params.Host,
 		Name:     params.Name,
 		Port:     params.Port,
-		Protocol: params.Protocl,
+		Protocol: params.Protocol,
 		Status:   dao.DeviceStatusFree,
 	}
-	if err := dao.GInsert(db, sqlDevice); err != nil {
+	if err = dao.GInsert(db, sqlDevice); err != nil {
 		response.Error(c, constant.InternalServerErrorCode, err)
 		return
 	}
 
-	// 发送到mqtt server
-	mqttConfig := global.ServerConfig.Mqtt
-
-	opts := mqtt.NewClientOptions().
-		AddBroker(mqttConfig.Addr).
-		SetClientID(uuid.New().String()).
-		SetUsername(mqttConfig.Username).
-		SetPassword(mqttConfig.Password)
-
-	client := mqtt.NewClient(opts)
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		response.Error(c, constant.InternalServerErrorCode, err)
-		return
-	}
-	defer client.Disconnect(mqttConfig.Quiesce)
-	b, err := json.Marshal(sqlDevice)
-	if err != nil {
-		response.Error(c, constant.InternalServerErrorCode, err)
-		return
-	}
-	if token := client.Publish(constants.AssayDeviceInsertTopic, 1, false, b); token.Wait() && token.Error() != nil {
+	// TODO: 暂时不做成异步发送
+	if err = servants.PublishDevices(); err != nil {
 		response.Error(c, constant.InternalServerErrorCode, err)
 		return
 	}
 
+	response.Success(c, "success")
+}
+
+func (*DeviceService) Delete(c *gin.Context, id uint) {
+	db := global.DB
+
+	if err := dao.GDelete[dao.Device](db, "id = ?", id); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+
+	if err := servants.PublishDevices(); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+	response.Success(c, "success")
+}
+
+func (*DeviceService) Update(c *gin.Context, id uint, params *forms.DeviceInsertForm) {
+	db := global.DB
+
+	sqlDevice, err := dao.GWhereFirstSelect[dao.Device](db, "*", "id = ?", id)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		response.Error(c, constant.BadRequestCode, errors.New("设备不存在，参数错误"))
+		return
+	}
+
+	sqlDevice.Name = params.Name
+	sqlDevice.Host = params.Host
+	sqlDevice.Port = params.Port
+	sqlDevice.Protocol = params.Protocol
+
+	if err = dao.GSave[dao.Device](db, sqlDevice, "id = ?", id); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
+
+	if err = servants.PublishDevices(); err != nil {
+		response.Error(c, constant.InternalServerErrorCode, err)
+		return
+	}
 	response.Success(c, "success")
 }
 
@@ -107,4 +132,9 @@ func (*DeviceService) Status(c *gin.Context) {
 			}
 		}
 	}
+}
+
+func (*DeviceService) UpdateStatusTask(client mqtt.Client, message mqtt.Message) {
+	fmt.Printf("当前话题是%s, 信息是%s", message.Topic(), string(message.Payload()))
+	// TODO: 解析 json 数据存入数据库
 }

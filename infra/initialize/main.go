@@ -5,4 +5,6 @@ func init() {
 	initConfig()
 	initMysql()
 	initRedis()
+	initMqtt()
+	initCat()
 }
