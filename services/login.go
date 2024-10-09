@@ -9,7 +9,7 @@ import (
 	"assay/infra/middleware"
 	"assay/infra/response"
 	"assay/infra/util"
-	"assay/infra/util/utf8togbk"
+	"assay/services/servants"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -19,7 +19,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/redis/go-redis/v9"
-	"github.com/tarm/serial"
 	"gorm.io/gorm"
 )
 
@@ -131,34 +130,38 @@ func loginGetToken(userId uint, redisPrefix string) (string, error) {
 }
 
 func (*LoginService) Code(c *gin.Context, params *forms.LoginGetCodeForm) {
-	catConfig := global.ServerConfig.Cat
-
-	s, err := serial.OpenPort(&serial.Config{
-		Name:        catConfig.Name,
-		Baud:        catConfig.Baud,
-		ReadTimeout: time.Duration(catConfig.ReadTimeout) * time.Millisecond,
-		Size:        catConfig.Size,
-		Parity:      serial.Parity(catConfig.Parity),
-		StopBits:    serial.StopBits(catConfig.StopBits),
-	})
-	if err != nil {
-		response.Error(c, constant.InternalServerErrorCode, err)
-		return
-	}
-	defer s.Close()
-
+	//catConfig := global.ServerConfig.Cat
+	//
+	//s, err := serial.OpenPort(&serial.Config{
+	//	Name:        catConfig.Name,
+	//	Baud:        catConfig.Baud,
+	//	ReadTimeout: time.Duration(catConfig.ReadTimeout) * time.Millisecond,
+	//	Size:        catConfig.Size,
+	//	Parity:      serial.Parity(catConfig.Parity),
+	//	StopBits:    serial.StopBits(catConfig.StopBits),
+	//})
+	//if err != nil {
+	//	response.Error(c, constant.InternalServerErrorCode, err)
+	//	return
+	//}
+	//defer s.Close()
+	//
+	//code := util.GenerateRandCode()
+	//data := fmt.Sprintf("#%s#%s#", params.Phone, fmt.Sprintf("【北方稀土】您的验证码是%s，在15分钟内有效。如非本人操作请忽略本短信。", code))
+	//b, err := utf8togbk.UTF8ToGBK([]byte(data))
+	//if err != nil {
+	//	response.Error(c, constant.InternalServerErrorCode, err)
+	//	return
+	//}
+	//if _, err = s.Write(b); err != nil {
+	//	response.Error(c, constant.InternalServerErrorCode, err)
+	//	return
+	//}
 	code := util.GenerateRandCode()
-	data := fmt.Sprintf("#%s#%s#", params.Phone, fmt.Sprintf("【北方稀土】您的验证码是%s，在15分钟内有效。如非本人操作请忽略本短信。", code))
-	b, err := utf8togbk.UTF8ToGBK([]byte(data))
-	if err != nil {
+	if err := servants.SendLoginShortMessage(params.Phone, fmt.Sprintf("【北方稀土】您的验证码是%s，在15分钟内有效。如非本人操作请忽略本短信。", code)); err != nil {
 		response.Error(c, constant.InternalServerErrorCode, err)
 		return
 	}
-	if _, err = s.Write(b); err != nil {
-		response.Error(c, constant.InternalServerErrorCode, err)
-		return
-	}
-
 	rdb := global.RDB
 	if err := rdb.Set(c, constants.AssayVerifyCodeRedisPrefix+params.Phone, code, time.Duration(15)*time.Minute).Err(); err != nil {
 		response.Error(c, constant.InternalServerErrorCode, err)

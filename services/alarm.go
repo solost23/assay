@@ -37,11 +37,21 @@ func (*AlarmService) List(c *gin.Context, params *forms.AlarmListForm) {
 		args = append(args, endTime)
 	}
 
+	db := global.DB
 	if params.Keyword != "" {
-
+		sqlDevices, err := dao.GWhereAllSelectOrder[dao.Device](db, "id", "id DESC", "name LIKE ?", params.Keyword)
+		if err != nil {
+			response.Error(c, constant.InternalServerErrorCode, err)
+			return
+		}
+		deviceIds := make([]uint, 0, len(sqlDevices))
+		for i := 0; i != len(sqlDevices); i++ {
+			deviceIds = append(deviceIds, sqlDevices[i].ID)
+		}
+		query = append(query, "device_id IN (?)")
+		args = append(args, deviceIds)
 	}
 
-	db := global.DB
 	sqlAlarms, total, pages, err := dao.GPaginateOrder[dao.Alarm](db, &dao.ListPageInput{
 		Page: params.Page,
 		Size: params.Size,

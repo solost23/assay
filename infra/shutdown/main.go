@@ -20,6 +20,9 @@ func Destroy() {
 	// mqtt
 	mqttConfig := global.ServerConfig.Mqtt
 	global.Mqtt.Disconnect(mqttConfig.Quiesce)
-
+	// cat
+	if err := global.Cat.Close(); err != nil {
+		zap.S().Error(err)
+	}
 	zap.L().Info("success destroy resources.")
 }
