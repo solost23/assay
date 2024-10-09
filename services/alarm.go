@@ -6,6 +6,8 @@ import (
 	"assay/infra/constant"
 	"assay/infra/global"
 	"assay/infra/response"
+	"fmt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"strings"
 	"time"
 
@@ -98,4 +100,9 @@ func (*AlarmService) List(c *gin.Context, params *forms.AlarmListForm) {
 		},
 		Records: records,
 	})
+}
+
+func (*AlarmService) InsertAlarmTask(client mqtt.Client, message mqtt.Message) {
+	fmt.Printf("当前话题是%s, 信息是%s", message.Topic(), string(message.Payload()))
+	// TODO: 解析 json 数据存入数据库
 }

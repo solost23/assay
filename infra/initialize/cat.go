@@ -3,7 +3,6 @@ package initialize
 import (
 	"assay/infra/global"
 	"github.com/tarm/serial"
-	"go.uber.org/zap"
 	"time"
 )
 
@@ -19,7 +18,8 @@ func initCat() {
 		StopBits:    serial.StopBits(catConfig.StopBits),
 	})
 	if err != nil {
-		zap.S().Panic("failed to connect cat: ", err)
+		// TODO: 暂时注释
+		//zap.S().Panic("failed to connect cat: ", err)
 	}
 	global.Cat = s
 }

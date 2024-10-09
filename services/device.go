@@ -8,6 +8,8 @@ import (
 	"assay/infra/response"
 	"assay/services/servants"
 	"errors"
+	"fmt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -130,4 +132,9 @@ func (*DeviceService) Status(c *gin.Context) {
 			}
 		}
 	}
+}
+
+func (*DeviceService) UpdateStatusTask(client mqtt.Client, message mqtt.Message) {
+	fmt.Printf("当前话题是%s, 信息是%s", message.Topic(), string(message.Payload()))
+	// TODO: 解析 json 数据存入数据库
 }
