@@ -17,6 +17,8 @@ func Register() *gin.Engine {
 		InitLoginRouter(apiGroup)
 		// 上位机状态同步
 		InitComputerRouter(apiGroup)
+		// 文件存储
+		InitOSSRouter(apiGroup)
 	}
 	apiGroup.Use(
 		middlewares.JWTAuth(),

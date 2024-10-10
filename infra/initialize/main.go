@@ -7,4 +7,5 @@ func init() {
 	initRedis()
 	initMqtt()
 	initCat()
+	initMinio()
 }

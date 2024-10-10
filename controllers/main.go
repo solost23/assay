@@ -9,4 +9,5 @@ var (
 	deviceService   services.DeviceService
 	computerService services.ComputerService
 	alarmService    services.AlarmService
+	OSSService      services.OSSService
 )
