@@ -11,6 +11,7 @@ type ServerConfig struct {
 	JWT          JWTConfig   `mapstructure:"jwt"`
 	Cat          CatConfig   `mapstructure:"cat"`
 	Mqtt         MqttConfig  `mapstructure:"mqtt"`
+	Minio        MinioConfig `mapstructure:"minio"`
 }
 
 type MySQLConfig struct {
@@ -45,4 +46,11 @@ type MqttConfig struct {
 	Quiesce  uint   `mapstructure:"quiesce"`
 	Username string `mapstructure:"username"`
 	Password string `mapstructure:"password"`
+}
+
+type MinioConfig struct {
+	EndPoint        string `mapstructure:"end_point"`
+	AccessKeyId     string `mapstructure:"access_key_id"`
+	SecretAccessKey string `mapstructure:"secret_access_key"`
+	UserSsl         bool   `mapstructure:"user_ssl"`
 }

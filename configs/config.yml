@@ -32,4 +32,9 @@ mqtt:
   quiesce: 250 # ms
   username: ""
   password: ""
-  
+
+minio:
+  end_point: "localhost:9000"
+  access_key_id: "minioadmin"
+  secret_access_key: "minioadmin"
+  user_ssl: false
