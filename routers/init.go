@@ -19,6 +19,8 @@ func Register() *gin.Engine {
 		InitComputerRouter(apiGroup)
 		// 文件存储
 		InitOSSRouter(apiGroup)
+		// excel导入
+		InitImportRouter(apiGroup)
 	}
 	apiGroup.Use(
 		middlewares.JWTAuth(),
