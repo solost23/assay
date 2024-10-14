@@ -88,3 +88,14 @@ func gWhereAllSelectOrderLimit[T any](db *gorm.DB, columns string, order string,
 
 	return results, nil
 }
+
+func GWhereCount[T any](db *gorm.DB, query string, args ...any) (int64, error) {
+	var t T
+	var count int64
+	err := db.Model(t).Where(query, args...).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
