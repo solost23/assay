@@ -2,9 +2,11 @@ package main
 
 import (
 	"assay/dao"
+	"assay/infra/constant"
 	"assay/infra/global"
 	"assay/infra/initialize"
 	"assay/infra/shutdown"
+	"assay/infra/util"
 	"assay/routers"
 	"assay/services"
 	"assay/services/servants"
@@ -16,8 +18,36 @@ import (
 )
 
 func main() {
-	if err := global.DB.AutoMigrate(&dao.Role{}, &dao.User{}, &dao.Device{}, &dao.Alarm{}, &dao.OSSFile{}); err != nil {
+	db := global.DB
+	if err := db.AutoMigrate(&dao.Role{}, &dao.User{}, &dao.Device{}, &dao.Alarm{}, &dao.OSSFile{}); err != nil {
 		zap.S().Panic("failed to migrate database: ", err)
+	}
+
+	// 创建默认角色和用户
+	sqlUserCnt, err := dao.GWhereCount[dao.User](db, "1 = ?", 1)
+	if err != nil {
+		zap.S().Panic("failed to query user cnt: ", err)
+	}
+	if sqlUserCnt == 0 {
+		sqlRole := &dao.Role{
+			Name:     "admin",
+			Nickname: "admin",
+		}
+		if err := dao.GInsert(db, sqlRole); err != nil {
+			zap.S().Panic("failed create default role: ", err)
+		}
+		sqlUser := &dao.User{
+			Username: "admin",
+			Password: util.NewMd5("123", constant.Secret),
+			Nickname: "admin",
+			// TODO: 后面补充
+			Phone:  "",
+			Email:  "",
+			RoleId: sqlRole.ID,
+		}
+		if err := dao.GInsert(db, sqlUser); err != nil {
+			zap.S().Panic("failed create default user: ", err)
+		}
 	}
 
 	// 订阅任务

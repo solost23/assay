@@ -8,14 +8,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/gabriel-vasile/mimetype"
-	"github.com/minio/minio-go"
 	"io"
 	"mime/multipart"
 	"net/url"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/gabriel-vasile/mimetype"
+	"github.com/minio/minio-go"
 )
 
 const (
@@ -57,9 +58,9 @@ func Upload(userId uint, folderName string, fileName string, fileBytes []byte, f
 }
 
 func upload(userId uint, folderName string, fileName string, fileBytes []byte, fileType string) (string, error) {
-	if err := createBucket(folderName); err != nil {
-		return "", err
-	}
+	// if err := createBucket(folderName); err != nil {
+	// 	return "", err
+	// }
 
 	reader := bytes.NewReader(fileBytes)
 	client := global.Minio
@@ -90,18 +91,37 @@ func upload(userId uint, folderName string, fileName string, fileBytes []byte, f
 	return fileUrl.String(), nil
 }
 
-func createBucket(bucketName string) error {
-	client := global.Minio
+// func createBucket(bucketName string) error {
+// 	client := global.Minio
 
-	exist, err := client.BucketExists(bucketName)
-	if err != nil {
-		return err
-	}
-	if exist {
-		return nil
-	}
-	if err = client.MakeBucket(bucketName, ""); err != nil {
-		return err
-	}
-	return nil
-}
+// 	exist, err := client.BucketExists(bucketName)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	if exist {
+// 		return nil
+// 	}
+// 	if err = client.MakeBucket(bucketName, ""); err != nil {
+// 		return err
+// 	}
+
+// 	policy := `{
+// 		"Version": "2012-10-17",
+// 		"Statement": [
+// 			{
+// 				"Effect": "Allow",
+// 				"Action": [
+// 					"s3:PutObject",
+// 					"s3:GetObject",
+// 					"s3:DeleteObject"
+// 				],
+// 				"Principal": "*",
+// 				"Resource": [
+// 					"arn:aws:s3:::%s/*"
+// 				]
+// 			}
+// 		]
+// 	}`
+
+// 	return client.SetBucketPolicy(bucketName, fmt.Sprintf(policy, bucketName))
+// }

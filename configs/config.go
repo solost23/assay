@@ -1,17 +1,19 @@
 package configs
 
 type ServerConfig struct {
-	Name         string      `mapstructure:"name"`
-	Version      string      `mapstructure:"version"`
-	Mode         string      `mapstructure:"mode"`
-	Port         int         `mapstructure:"port"`
-	TimeLocation string      `mapstructure:"time_location"`
-	MySQL        MySQLConfig `mapstructure:"mysql"`
-	Redis        RedisConfig `mapstructure:"redis"`
-	JWT          JWTConfig   `mapstructure:"jwt"`
-	Cat          CatConfig   `mapstructure:"cat"`
-	Mqtt         MqttConfig  `mapstructure:"mqtt"`
-	Minio        MinioConfig `mapstructure:"minio"`
+	Name         string           `mapstructure:"name"`
+	Version      string           `mapstructure:"version"`
+	Mode         string           `mapstructure:"mode"`
+	Port         int              `mapstructure:"port"`
+	TimeLocation string           `mapstructure:"time_location"`
+	MySQL        MySQLConfig      `mapstructure:"mysql"`
+	Redis        RedisConfig      `mapstructure:"redis"`
+	JWT          JWTConfig        `mapstructure:"jwt"`
+	Cat          CatConfig        `mapstructure:"cat"`
+	Mqtt         MqttConfig       `mapstructure:"mqtt"`
+	Minio        MinioConfig      `mapstructure:"minio"`
+	StaticOSS    StaticOSSConfig  `mapstructure:"static_oss"`
+	DynamicOSS   DynamicOSSConfig `mapstructure:"dynamic_oss"`
 }
 
 type MySQLConfig struct {
@@ -53,4 +55,14 @@ type MinioConfig struct {
 	AccessKeyId     string `mapstructure:"access_key_id"`
 	SecretAccessKey string `mapstructure:"secret_access_key"`
 	UserSsl         bool   `mapstructure:"user_ssl"`
+}
+
+type StaticOSSConfig struct {
+	Domain string `mapstructure:"domain"`
+	Bucket string `mapstructuree:"bucket"`
+}
+
+type DynamicOSSConfig struct {
+	Domain string `mapstructure:"domain"`
+	Bucket string `mapstructuree:"bucket"`
 }

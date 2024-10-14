@@ -5,13 +5,13 @@ port: 8083
 time_location: "Asia/Shanghai"
 
 mysql:
-  dsn: "root:123@tcp(localhost:3306)/assay?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai"
+  dsn: "root:123@tcp(mariadb:3306)/assay?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai"
   max_open_conn: 20
   max_idle_conn: 10
   max_conn_life_time: 100
   
 redis:
-  addr: "localhost:6379"
+  addr: "redis:6379"
   password: ""
   
 jwt:
@@ -28,13 +28,21 @@ Cat:
   parity: 78 # 'N' 
 
 mqtt:
-  addr: "localhost:1883"
+  addr: "mqtt:1883"
   quiesce: 250 # ms
   username: ""
   password: ""
 
 minio:
-  end_point: "localhost:9000"
+  end_point: "minio:9000"
   access_key_id: "minioadmin"
   secret_access_key: "minioadmin"
   user_ssl: false
+
+static_oss:
+  domain: "http://localhost:9000"
+  bucket: "assay.static"
+
+dynamic_oss:
+  domain: "http://localhost:9000"
+  bucket: "assay"

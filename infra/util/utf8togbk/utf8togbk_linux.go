@@ -2,6 +2,6 @@
 
 package utf8togbk
 
-func UTF8ToGBK(b []byte) []byte {
-	return b
+func UTF8ToGBK(b []byte) ([]byte, error) {
+	return b, nil
 }
