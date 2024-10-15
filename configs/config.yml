@@ -20,7 +20,7 @@ jwt:
   duration: 2678400
 
 Cat:
-  name: "COM3"
+  name: "/dev/ttyUSB0"
   baud: 115200
   read_timeout: 500 # ms
   size: 8

@@ -2,7 +2,7 @@ package servants
 
 import (
 	"assay/infra/global"
-	"assay/infra/util/utf8togbk"
+	"assay/infra/util"
 	"fmt"
 	"strings"
 )
@@ -13,7 +13,7 @@ func SendLoginShortMessage(phone string, message string) error {
 
 func Send(phones []string, message string) error {
 	data := fmt.Sprintf("#%s#%s#", strings.Join(phones, ","), message)
-	b, err := utf8togbk.UTF8ToGBK([]byte(data))
+	b, err := util.UTF8ToGBK([]byte(data))
 	if err != nil {
 		return err
 	}

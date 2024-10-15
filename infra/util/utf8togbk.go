@@ -1,6 +1,4 @@
-//go:build windows
-
-package utf8togbk
+package util
 
 import (
 	"bytes"
