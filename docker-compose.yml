@@ -34,9 +34,9 @@ services:
       - "3306:3306"
     volumes:
       - "./sql:/docker-entrypoint-initdb.d"
-      - "./data/mysql:/var/lib/mysql"
-      - "./log/mysql:/var/log/mysql"
-      - "./conf/mysql:/etc/mysql"
+      - "/var/lib/mysql:/var/lib/mysql"
+      - "/var/log/mysql:/var/log/mysql"
+      - "/etc/mysql:/etc/mysql"
     networks:
       - app-net 
 
@@ -67,8 +67,8 @@ services:
       - "9000:9000"
       - "9001:9001"
     volumes:
-      - "./data/minio/data1:/data1"
-      - "./data/minio/data2:/data2"
+      - "/var/lib/minio/data1:/data1"
+      - "/var/lib/minio/data2:/data2"
     networks:
       - app-net
 
