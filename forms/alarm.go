@@ -2,6 +2,20 @@ package forms
 
 import "assay/infra/constant"
 
+type AlarmInsertForm struct {
+	Host             string `xml:"ipAddress"`
+	Port             int    `xml:"portNo"`
+	Protocol         string `xml:"protocol"`
+	MacHost          string `xml:"macAddress"`
+	ChannelId        int    `xml:"channelID"`
+	CreatedAtStr     string `xml:"dateTime"`
+	ActivePostCount  int    `xml:"activePostCount"`
+	EventType        string `xml:"eventType"`
+	EventState       string `xml:"eventState"`
+	EventDescription string `xml:"eventDescription"`
+	ChannelName      string `xml:"channelName"`
+}
+
 type AlarmListForm struct {
 	constant.PageForm
 	StartTime string `form:"startTime"`

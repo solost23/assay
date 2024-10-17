@@ -21,6 +21,8 @@ func Register() *gin.Engine {
 		InitOSSRouter(apiGroup)
 		// excel导入
 		InitImportRouter(apiGroup)
+		// 设备报警
+		InitAlarmRouter(apiGroup)
 	}
 	apiGroup.Use(
 		middlewares.JWTAuth(),
@@ -30,7 +32,6 @@ func Register() *gin.Engine {
 		InitUserRouter(apiGroup)
 		// 设备状态同步
 		InitDeviceRouter(apiGroup)
-		InitAlarmRouter(apiGroup)
 	}
 
 	return router
