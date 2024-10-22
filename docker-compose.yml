@@ -1,6 +1,18 @@
 version: "3.5"
 
 services:
+  nginx:
+    image: nginx 
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/nginx/nginx.conf:/etc/nginx/nginx.conf"
+      - "./dist:/usr/share/nginx/html"
+      - "/var/log/nginx:/var/log/nginx"
+    networks:
+      - app-net 
   app-assay:
     build: 
       context: . 

@@ -1,0 +1,1 @@
+import{_ as r,c as e,o as t}from"./index.1248482e.js";var a=r({created(){const{params:r,query:e}=this.$route,{path:t}=r;this.$router.replace({path:"/"+t,query:e})},render:function(r){return r()}},[["render",function(r,a,n,o,s,u){return t(),e("div")}]]);export{a as default};
