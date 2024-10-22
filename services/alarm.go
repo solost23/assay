@@ -7,15 +7,23 @@ import (
 	"assay/infra/global"
 	"assay/infra/response"
 	"fmt"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"strings"
 	"time"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/now"
 )
 
 type AlarmService struct{}
+
+func (*AlarmService) Insert(c *gin.Context, params *forms.AlarmInsertForm) {
+	// TODO: 逻辑待补充
+	zap.S().Infof("recv: %+#v from channel: %s channel id: %d", params, params.ChannelName, params.ChannelId)
+	response.Success(c, "success")
+}
 
 func (*AlarmService) List(c *gin.Context, params *forms.AlarmListForm) {
 	query := []string{"1 = ?"}

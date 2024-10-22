@@ -14,7 +14,22 @@ type AlarmController struct{}
 func AlarmRegister(router *gin.RouterGroup) {
 	controller := &AlarmController{}
 
+	// 报警信息保存
+	router.POST("", controller.insert)
+	// 报警列表
 	router.GET("", controller.list)
+}
+
+func (*AlarmController) insert(c *gin.Context) {
+	c.Request.Header.Set("Content-Type", "application/xml")
+
+	params := &forms.AlarmInsertForm{}
+	if err := util.DefaultGetValidParams(c, params); err != nil {
+		response.Error(c, constant.BadRequestCode, err)
+		return
+	}
+
+	alarmService.Insert(c, params)
 }
 
 func (controller *AlarmController) list(c *gin.Context) {
