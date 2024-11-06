@@ -14,6 +14,7 @@ type ServerConfig struct {
 	Minio        MinioConfig      `mapstructure:"minio"`
 	StaticOSS    StaticOSSConfig  `mapstructure:"static_oss"`
 	DynamicOSS   DynamicOSSConfig `mapstructure:"dynamic_oss"`
+	Text         TextConfig       `mapstructure:"text"`
 }
 
 type MySQLConfig struct {
@@ -65,4 +66,10 @@ type StaticOSSConfig struct {
 type DynamicOSSConfig struct {
 	Domain string `mapstructure:"domain"`
 	Bucket string `mapstructuree:"bucket"`
+}
+
+type TextConfig struct {
+	Width  int    `mapstructure:"width"`
+	Height int    `mapstructure:"height"`
+	Url    string `mapstructure:"url"`
 }
