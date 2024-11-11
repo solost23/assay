@@ -12,4 +12,5 @@ var (
 	OSSService      services.OSSService
 	importService   services.ImportService
 	textService     services.TextService
+	barriersService services.BarriersService
 )
