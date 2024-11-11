@@ -25,6 +25,8 @@ func Register() *gin.Engine {
 		InitAlarmRouter(apiGroup)
 		// 文本屏
 		InitTextScreenRouter(apiGroup)
+		// 道闸
+		InitBarriersRouter(apiGroup)
 	}
 	apiGroup.Use(
 		middlewares.JWTAuth(),
