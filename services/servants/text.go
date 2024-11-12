@@ -16,7 +16,7 @@ const (
 )
 
 const (
-	timeout = 300 * time.Millisecond
+	timeout = 3 * time.Second
 )
 
 func NewXiXunPlayRequest(name string, blocks []forms.Block) *XiXunPlayRequest {
