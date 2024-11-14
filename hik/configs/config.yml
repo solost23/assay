@@ -1,0 +1,9 @@
+name: "hik"
+version: "0.0.1"
+port: 8082
+
+nvr:
+  host: "192.168.1.98"
+  port: 8000
+  user: "admin"
+  password: "asdfghj1"

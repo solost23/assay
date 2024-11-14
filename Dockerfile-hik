@@ -1,0 +1,8 @@
+FROM gcc-cmake:latest
+
+WORKDIR /app 
+COPY ./hik /app
+
+RUN ./build.sh hik 
+
+CMD ["/app/hik"]
