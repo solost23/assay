@@ -1,21 +1,35 @@
+#pragma once
+
 #include <iostream>
 #include <fstream>
+
 #include "yaml-cpp/yaml.h"
 
-struct NvrConfig {
+#include "../util/error.h"
+
+struct NvrConfig 
+{
     std::string host;
     int port;
     std::string user;
     std::string password;
 };
 
-struct ServerConfig {
+struct ServerConfig 
+{
     std::string name;
     std::string version;
     int port;
+    int thread;
     NvrConfig nvr;
 };
 
-extern ServerConfig serverConfig;
+class config
+{
+private:
+public:
+    config();
+    ~config();
 
-int config(std::string);
+    Error initConfig(std::string configPath, ServerConfig& serverConfig);
+};

@@ -1,16 +1,18 @@
-#include <iostream>
-#include <fstream>
-#include "yaml-cpp/yaml.h"
-
 #include "config.h"
 
-ServerConfig serverConfig{};
+config::config()
+{
+}
 
-int config(std::string configPath) {
+config::~config()
+{
+}
+
+Error config::initConfig(std::string configPath, ServerConfig& serverConfig)
+{
     std::ifstream fp(configPath);
     if (!fp) {
-        std::cerr << "Open Config File err" << std::endl;
-        return -1;
+        return Error::FileOpenFailed;
     }
 
     YAML::Node config = YAML::Load(fp);
@@ -24,8 +26,7 @@ int config(std::string configPath) {
         serverConfig.nvr.user = config["nvr"]["user"].as<std::string>();
         serverConfig.nvr.password = config["nvr"]["password"].as<std::string>();
     } catch (const YAML::Exception& e) {
-        std::cerr << "Read Config File err: " << e.what() << std::endl;
-        return -1;
+        return Error::FileReadFailed;
     }
-    return 0;
+    return Error::Nil;
 }
