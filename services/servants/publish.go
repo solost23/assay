@@ -17,6 +17,18 @@ func PublishDevices() error {
 	return Publish(constants.AssayDeviceTopic, sqlDevices)
 }
 
+type PublishBarriersForm struct {
+	ID        string `json:"id"`
+	CarStatus int    `json:"car_status"`
+	CarCode   string `json:"car_code"`
+	TaskId    int    `json:"task_id"`
+}
+
+func PublishBarriers(publishBarriersForm PublishBarriersForm) error {
+	publishBarriersForm.ID = "Barrier_Info"
+	return Publish(constants.AssayInfoManger, publishBarriersForm)
+}
+
 func Publish(topic string, data any) error {
 	client := global.Mqtt
 

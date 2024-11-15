@@ -36,24 +36,24 @@ services:
     networks:
       - app-net 
 
-  app-hik:
-    build:
-      context: . 
-      dockerfile: Dockerfile-hik
-    container_name: app-hik
-    restart: always
-    environment:
-      TZ: "Asia/Shanghai"
-      LD_LIBRARY_PATH: "/app/libs/lib"
-    ports:
-      - "8082:8082"
-    volumes:
-      - "./hik/configs/config.yml:/app/configs/config.yml"
-      - "/tmp:/tmp"
-    depends_on:
-      - app-assay
-    networks:
-      - app-net
+  # app-hik:
+  #   build:
+  #     context: . 
+  #     dockerfile: Dockerfile-hik
+  #   container_name: app-hik
+  #   restart: always
+  #   environment:
+  #     TZ: "Asia/Shanghai"
+  #     LD_LIBRARY_PATH: "/app/libs/lib"
+  #   ports:
+  #     - "8082:8082"
+  #   volumes:
+  #     - "./hik/configs/config.yml:/app/configs/config.yml"
+  #     - "/tmp:/tmp"
+  #   depends_on:
+  #     - app-assay
+  #   networks:
+  #     - app-net
 
   mariadb:
     image: mariadb:11.5.2
