@@ -1,4 +1,4 @@
-FROM gcc-cmake:latest
+FROM hy6w/gcc-cmake:latest
 
 WORKDIR /app 
 COPY ./hik /app
