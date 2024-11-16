@@ -1,7 +1,7 @@
-prefix=/app/web-go/hik/libs
+prefix=/home/test/assay/hik/libs
 exec_prefix=${prefix}
-includedir=/app/web-go/hik/libs/include
-libdir=/app/web-go/hik/libs/lib
+includedir=/home/test/assay/hik/libs/include
+libdir=/home/test/assay/hik/libs/lib
 
 Name: Yaml-cpp
 Description: A YAML parser and emitter for C++
