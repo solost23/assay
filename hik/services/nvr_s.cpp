@@ -1,8 +1,8 @@
 #include "nvr_s.h"
 
-nvr_s::nvr_s(ServerConfig config)
+nvr_s::nvr_s(Config config)
 {
-    serverConfig = config;
+    config = config;
 }
 
 nvr_s::~nvr_s()
@@ -44,10 +44,10 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
     NET_DVR_SetReconnect(10000, true);
 
     NET_DVR_DEVICEINFO_V30 deviceInfo{};
-    NvrConfig nvrConfig = serverConfig.nvr;
+    NvrConfig nvrConfig = config.nvr;
     char* host = new char[nvrConfig.host.length() + 1]; strcpy(host, nvrConfig.host.c_str());
     char* user = new char[nvrConfig.user.length() + 1]; strcpy(user, nvrConfig.user.c_str());
-    char* password = new char[serverConfig.nvr.password.length() + 1]; strcpy(password, serverConfig.nvr.password.c_str());
+    char* password = new char[nvrConfig.password.length() + 1]; strcpy(password, nvrConfig.password.c_str());
     LONG userId = NET_DVR_Login_V30(
         host, 
         nvrConfig.port, 

@@ -5,16 +5,13 @@
 class nvr_c
 {
 private:
-    ServerConfig serverConfig;
+    Config config;
 
     Error parse(const httplib::Request& request, int& value, std::string field);
 public:
-    nvr_c(ServerConfig config);
+    nvr_c(Config );
     ~nvr_c();
 
     // 视频下载
     void download(const httplib::Request& request, httplib::Response& response);
 };
-
-
-

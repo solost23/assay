@@ -1,8 +1,8 @@
 #include "nvr_c.h"
 
-nvr_c::nvr_c(ServerConfig config)
+nvr_c::nvr_c(Config config)
 {
-    serverConfig = config;
+    config = config;
 }
 
 nvr_c::~nvr_c()
@@ -87,7 +87,7 @@ void nvr_c::download(const httplib::Request& request, httplib::Response& respons
         return ;
     }
 
-    nvr_s* nvrService = new nvr_s(serverConfig);
+    nvr_s* nvrService = new nvr_s(config);
     nvrService->nvrDownload(request, response, params);
     return ;
 }

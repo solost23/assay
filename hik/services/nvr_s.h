@@ -9,19 +9,19 @@
 #include "HCNetSDK.h"
 #include <httplib.h>
 #include "spdlog/spdlog.h"
-#include "../configs/config.h"
-#include "../forms/nvr.h"
+#include "../configs/config_s.h"
+#include "../forms/nvr_f.h"
 
 
 class nvr_s
 {
 private:
-    ServerConfig serverConfig;
+    Config config;
     
     Error download(DownloadForm&, std::string&);
     Error currentTimeStr(std::string& now);
 public:
-    nvr_s(ServerConfig config);
+    nvr_s(Config config);
     ~nvr_s();
 
     void nvrDownload(const httplib::Request& request, httplib::Response& response, DownloadForm params) ;
