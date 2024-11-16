@@ -26,5 +26,3 @@ if(yamlLIBRARY)
 else()
     message(FATAL_ERROR "Could not find yaml library")
 endif()
-
-

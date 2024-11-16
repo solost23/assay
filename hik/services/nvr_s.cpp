@@ -10,17 +10,16 @@ nvr_s::~nvr_s()
 }
 
 void nvr_s::nvrDownload(const httplib::Request& request, httplib::Response& response, DownloadForm params) {
-
-    std::string filepath;
+    std::string filepath{};
     if (Error err = download(params, filepath); err != Error::Nil) {
-        response.status = Error::IntervalServerFailed;
+        response.status = 200;
         response.set_content(error(err), "text/plain");
         return;
     }
     
     std::ifstream fp(filepath, std::ios::binary);
     if (!fp.is_open()) {
-        response.status = Error::NotFound;
+        response.status = 200;
         response.set_content(error(Error::FileOpenFailed), "text/plain");
         return;
     }
@@ -44,7 +43,7 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
     NET_DVR_SetConnectTime(2000, 1);
     NET_DVR_SetReconnect(10000, true);
 
-    NET_DVR_DEVICEINFO_V30 deviceInfo;
+    NET_DVR_DEVICEINFO_V30 deviceInfo{};
     NvrConfig nvrConfig = serverConfig.nvr;
     char* host = new char[nvrConfig.host.length() + 1]; strcpy(host, nvrConfig.host.c_str());
     char* user = new char[nvrConfig.user.length() + 1]; strcpy(user, nvrConfig.user.c_str());
@@ -59,6 +58,7 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
         NET_DVR_Cleanup();
         return Error::UserLoginFailed;
     }
+    spdlog::info("login success...");
 
     // 注意：目前SDK私有协议对接时64路以下的NVR的IP通道号是从33开始的，64路以及以上的NVR的IP通道从1开始
     NET_DVR_PLAYCOND downloadCond{};
@@ -86,7 +86,7 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
     char* filename = new char[filepath.length() + 1]; strcpy(filename, filepath.c_str());
     int hPlayback = NET_DVR_GetFileByTime_V40(userId, filename, &downloadCond);
     if (hPlayback < 0) {
-        // std::cerr << "NET_DVR_GetFileByTime_V40 fail, last err: " << NET_DVR_GetLastError() << std::endl; NET_DVR_Logout(userId); NET_DVR_Cleanup(); return -1;
+        spdlog::error(error(Error::DvrGetFileByTimeV40Failed));
         NET_DVR_Logout(userId);
         NET_DVR_Cleanup();
         return Error::DvrGetFileByTimeV40Failed;
@@ -94,7 +94,7 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
 
     // 开始下载
     if (!NET_DVR_PlayBackControl_V40(hPlayback, NET_DVR_PLAYSTART, NULL, 0, NULL, NULL)) {
-        // std::cerr << "Play back control failed " << NET_DVR_GetLastError() << std::endl; NET_DVR_Logout(userId); NET_DVR_Cleanup(); return -1;
+        spdlog::error(error(Error::PlaybackControlFailed));
         NET_DVR_Logout(userId);
         NET_DVR_Cleanup();
         return Error::PlaybackControlFailed;
@@ -103,24 +103,26 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
     int nPos = 0;
     for (nPos = 0; nPos < 100 && nPos >= 0; nPos = NET_DVR_GetDownloadPos(hPlayback))
     {
-        std::cout << "Be downloading... " << nPos << "%" << std::endl;
+        ss.clear();ss.str("");ss << nPos; 
+        spdlog::info("Be downloading..." + ss.str() + "%");
         sleep(2);
     }
     if (!NET_DVR_StopGetFile(hPlayback))
     {
-        // std::cerr << "failed to stop get file " << NET_DVR_GetLastError() << std::endl; NET_DVR_Logout(userId); NET_DVR_Cleanup(); return -1;
+        spdlog::error(error(Error::FileStopGetFailed));
         NET_DVR_Logout(userId);
         NET_DVR_Cleanup();
         return Error::FileStopGetFailed;
     }
     if (nPos < 0 || nPos>100)
     {
-        // std::cout << "download err " << NET_DVR_GetLastError() << std::endl; NET_DVR_Logout(userId); NET_DVR_Cleanup(); return -1;
+        spdlog::error(error(Error::FileDownloadFailed));
         NET_DVR_Logout(userId);
         NET_DVR_Cleanup();
         return Error::FileDownloadFailed;
     }
-    std::cout << "Be downloading..." << nPos << std::endl;
+    ss.clear();ss.str("");ss << nPos; 
+    spdlog::info("Be downloading..." + ss.str() + "%");
     NET_DVR_Logout(userId);
     NET_DVR_Cleanup();
     filepathR = filename;

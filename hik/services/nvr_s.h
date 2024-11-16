@@ -8,6 +8,7 @@
 
 #include "HCNetSDK.h"
 #include <httplib.h>
+#include "spdlog/spdlog.h"
 #include "../configs/config.h"
 #include "../forms/nvr.h"
 

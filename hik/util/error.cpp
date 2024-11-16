@@ -10,8 +10,6 @@ std::string error(Error err) {
             return "file open failed";
         case Error::FileReadFailed:
             return "file read failed";
-        case Error::ParamParseFailed:
-            return "param parse failed";
         case Error::UserLoginFailed:
             return "user login failed";
         case Error::DvrGetFileByTimeV40Failed:
@@ -24,6 +22,8 @@ std::string error(Error err) {
             return "file download failed";
         case Error::IntervalServerFailed:
             return "interval server failed";
+        case Error::BadRequest:
+            return "bad request";
         case Error::NotFound:
             return "resource not found";
     }
