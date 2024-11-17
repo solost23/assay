@@ -9,7 +9,7 @@ nvr_c::~nvr_c()
 {
 }
 
-void nvr_c::download(const httplib::Request& request, httplib::Response& response)
+void nvr_c::download(const httplib::Request& request, httplib::Response& response) const 
 {
     // 接收参数并打印
     DownloadForm params{};
@@ -87,12 +87,12 @@ void nvr_c::download(const httplib::Request& request, httplib::Response& respons
         return ;
     }
 
-    nvr_s* nvrService = new nvr_s(config);
-    nvrService->nvrDownload(request, response, params);
+    nvr_s nvr_service = nvr_s(config);
+    nvr_service.nvr_download(request, response, params);
     return ;
 }
 
-Error nvr_c::parse(const httplib::Request& request, int& value, std::string field)
+Error nvr_c::parse(const httplib::Request& request, int& value, std::string field) const 
 {
     if (!request.has_param(field)) {
         return Error::BadRequest;

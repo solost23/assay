@@ -7,11 +7,11 @@ class nvr_c
 private:
     Config config;
 
-    Error parse(const httplib::Request& request, int& value, std::string field);
+    Error parse(const httplib::Request& request, int& value, std::string field) const;
 public:
     nvr_c(Config );
     ~nvr_c();
 
     // 视频下载
-    void download(const httplib::Request& request, httplib::Response& response);
+    void download(const httplib::Request& request, httplib::Response& response) const;
 };

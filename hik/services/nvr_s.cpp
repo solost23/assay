@@ -9,7 +9,7 @@ nvr_s::~nvr_s()
 {
 }
 
-void nvr_s::nvrDownload(const httplib::Request& request, httplib::Response& response, DownloadForm params) {
+void nvr_s::nvr_download(const httplib::Request& request, httplib::Response& response, DownloadForm params) {
     std::string filepath{};
     if (Error err = download(params, filepath); err != Error::Nil) {
         response.status = 200;
@@ -79,7 +79,7 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
 
     // 按时间下载
     std::string now{};
-    currentTimeStr(now);
+    current_time_str(now);
     std::hash<std::string> hasher; 
     std::stringstream ss; ss << std::hex << hasher(now);
     std::string filepath = "/tmp/"+ss.str() + ".mp4";
@@ -129,7 +129,7 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
     return Error::Nil;
 }
 
-Error nvr_s::currentTimeStr(std::string& now) 
+Error nvr_s::current_time_str(std::string& now) 
 {
     std::time_t now_t = std::time(nullptr);
     char buf[100];

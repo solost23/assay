@@ -19,10 +19,10 @@ private:
     Config config;
     
     Error download(DownloadForm&, std::string&);
-    Error currentTimeStr(std::string& now);
+    Error current_time_str(std::string& now);
 public:
     nvr_s(Config config);
     ~nvr_s();
 
-    void nvrDownload(const httplib::Request& request, httplib::Response& response, DownloadForm params) ;
+    void nvr_download(const httplib::Request& request, httplib::Response& response, DownloadForm params);
 };
