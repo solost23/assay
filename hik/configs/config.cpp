@@ -1,6 +1,6 @@
 #include "config.h"
 
-Config::Config(std::string path)
+config_s::config_s(std::string path)
 {
     std::ifstream fp(path);
     if (!fp) {
@@ -22,6 +22,7 @@ Config::Config(std::string path)
     }
 }
 
-Config::~Config()
+config_s::~config_s()
 {
+    spdlog::info("config_s object is being deleted");
 }

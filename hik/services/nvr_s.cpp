@@ -7,6 +7,7 @@ nvr_s::nvr_s(Config config)
 
 nvr_s::~nvr_s()
 {
+    spdlog::info("nvr_s object is being deleted");
 }
 
 void nvr_s::nvr_download(const httplib::Request& request, httplib::Response& response, DownloadForm params) {

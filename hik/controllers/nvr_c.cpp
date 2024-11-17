@@ -7,9 +7,10 @@ nvr_c::nvr_c(Config config)
 
 nvr_c::~nvr_c()
 {
+    spdlog::info("nvr_c object is being deleted");
 }
 
-void nvr_c::download(const httplib::Request& request, httplib::Response& response) const 
+void nvr_c::download(const httplib::Request& request, httplib::Response& response)
 {
     // 接收参数并打印
     DownloadForm params{};
@@ -89,10 +90,10 @@ void nvr_c::download(const httplib::Request& request, httplib::Response& respons
 
     nvr_s nvr_service = nvr_s(config);
     nvr_service.nvr_download(request, response, params);
-    return ;
+    return;
 }
 
-Error nvr_c::parse(const httplib::Request& request, int& value, std::string field) const 
+Error nvr_c::parse(const httplib::Request& request, int& value, std::string field) 
 {
     if (!request.has_param(field)) {
         return Error::BadRequest;

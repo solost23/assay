@@ -4,7 +4,6 @@
 #include <fstream>
 
 #include "spdlog/spdlog.h"
-
 #include "yaml-cpp/yaml.h"
 
 #include "../util/error.h"
@@ -17,7 +16,7 @@ struct NvrConfig
     std::string password;
 };
 
-struct ServerConfig 
+struct Config 
 {
     std::string name;
     std::string version;
@@ -26,13 +25,13 @@ struct ServerConfig
     NvrConfig nvr;
 };
 
-class Config
+class config_s
 {
 private:
     
 public:
-    ServerConfig config;
+    Config config;
 
-    Config(std::string path);
-    ~Config();
+    config_s(std::string path);
+    ~config_s();
 };

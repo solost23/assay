@@ -8,14 +8,15 @@ int main() {
 
     // 开启http服务
     httplib::Server server;
-    // nvr_c* nvr_controller = new nvr_c(config.config);
-    nvr_c nvr_controller = nvr_c(config.config);
+    nvr_c* nvr_controller = new nvr_c(config.config);
     server.Get("/api/hik/nvr/download", [nvr_controller](const httplib::Request &request, httplib::Response& response) {
-        nvr_controller.download(request, response);
+        nvr_controller->download(request, response);
     });
 
     std::stringstream ss; ss << config.config.port;
     spdlog::info("server start: " + ss.str());
     server.listen("0.0.0.0", config.config.port, config.config.thread);
+
+    spdlog::info("server stop");
     return Error::Nil;
 }
