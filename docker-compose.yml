@@ -29,7 +29,7 @@ services:
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
     depends_on:
-      - mariadb 
+      - mysql
       - redis 
       - mqtt 
       - minio 
