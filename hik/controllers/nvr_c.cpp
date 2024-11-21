@@ -93,14 +93,6 @@ void nvr_c::download(const httplib::Request& request, httplib::Response& respons
     return;
 }
 
-void nvr_c::preview(const httplib::Request& request, httplib::Response& response)
-{
-    // 接收参数并打印
-
-    nvr_s nvr_service = nvr_s(config);
-    nvr_service.nvr_preview(request, response);
-}
-
 Error nvr_c::parse(const httplib::Request& request, int& value, std::string field) 
 {
     if (!request.has_param(field)) {
