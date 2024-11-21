@@ -9,8 +9,13 @@ int main() {
     // 开启http服务
     httplib::Server server;
     nvr_c* nvr_controller = new nvr_c(config.config);
+
+    // 视频下载
     server.Get("/api/hik/nvr/download", [nvr_controller](const httplib::Request &request, httplib::Response& response) {
         nvr_controller->download(request, response);
+    });
+    server.Get("/api/hik/nvr/preview", [nvr_controller](const httplib::Request &request, httplib::Response& response) {
+        nvr_controller->preview(request, response);
     });
 
     std::stringstream ss; ss << config.config.port;

@@ -14,4 +14,6 @@ public:
 
     // 视频下载
     void download(const httplib::Request& request, httplib::Response& response);
+    // 视频预览
+    void preview(const httplib::Request& request, httplib::Response& response);
 };
