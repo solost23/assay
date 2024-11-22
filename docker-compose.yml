@@ -2,18 +2,22 @@ version: "3.5"
 
 services:
   nginx:
-    image: nginx 
+    image: tiangolo/nginx-rtmp
     container_name: nginx
     restart: always
     ports:
       - "8080:80"
+      - "1935:1935"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/nginx/nginx.conf:/etc/nginx/nginx.conf"
       - "./dist:/usr/share/nginx/html"
       - "/var/log/nginx:/var/log/nginx"
+      # 推流文件夹
+      - "/var/share/nginx/html/hls:/var/share/nginx/html/hls"
     networks:
       - app-net 
+
   app-assay:
     build: 
       context: . 
