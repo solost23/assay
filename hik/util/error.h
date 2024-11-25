@@ -9,6 +9,7 @@ enum Error {
     PlaybackControlFailed = -6, 
     FileStopGetFailed = -7,
     FileDownloadFailed = -8, 
+    DvrGetConfigFailed = -9,
     IntervalServerFailed = 1500, 
     BadRequest = 1400,
     NotFound = 404, 

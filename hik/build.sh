@@ -4,7 +4,7 @@
 # ./jsoncpp_build.sh
 # ./muduo_build.sh
 # ./yamlcpp_build.sh
-pkgs=("cpp-httplib" "yaml-cpp-master" "spdlog")
+pkgs=("cpp-httplib" "yaml-cpp-master" "spdlog" "json")
 for pkg in "${pkgs[@]}"; do 
     ./pkg_build.sh ${pkg}
 done 
@@ -24,4 +24,5 @@ mkdir -p ${BUILD_DIR} \
         -DCMAKE_BUILD_TYPE=${BUILD_TYPD} \
         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
         $SOURCE_DIR \
-    && make && mv ./${PROJECT} ../${PROJECT} && rm -rf ${SOURCE_DIR}/build
+    && make && mv ./${PROJECT} ../${PROJECT} \
+    # && rm -rf ${SOURCE_DIR}/build

@@ -2,12 +2,18 @@
 
 nvr_c::nvr_c(Config config)
 {
-    config = config;
+    this->config = config;
 }
 
 nvr_c::~nvr_c()
 {
     spdlog::info("nvr_c object is being deleted");
+}
+
+void nvr_c::channel(const httplib::Request& request, httplib::Response& response) 
+{
+    nvr_s nvr_service = nvr_s(config);
+    nvr_service.nvr_channel(request, response);
 }
 
 void nvr_c::download(const httplib::Request& request, httplib::Response& response)

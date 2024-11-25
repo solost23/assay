@@ -20,6 +20,8 @@ std::string error(Error err) {
             return "file stop get failed";
         case Error::FileDownloadFailed:
             return "file download failed";
+        case Error::DvrGetConfigFailed:
+            return "dvr_get_config failed";
         case Error::IntervalServerFailed:
             return "interval server failed";
         case Error::BadRequest:

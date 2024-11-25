@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "httplib.h"
+#include <nlohmann/json.hpp>
 #include "spdlog/spdlog.h"
 
 #include "HCNetSDK.h"
@@ -25,5 +26,6 @@ public:
     nvr_s(Config config);
     ~nvr_s();
 
+    void nvr_channel(const httplib::Request& request, httplib::Response& response);
     void nvr_download(const httplib::Request& request, httplib::Response& response, DownloadForm params);
 };

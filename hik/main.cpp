@@ -10,7 +10,10 @@ int main() {
     httplib::Server server;
     nvr_c* nvr_controller = new nvr_c(config.config);
 
-    server.Get("/api/hik/nvr/download", [nvr_controller](const httplib::Request &request, httplib::Response& response) {
+    server.Get("/api/hik/nvr/channel", [nvr_controller](const httplib::Request& request, httplib::Response& response) {
+        nvr_controller->channel(request, response);
+    });
+    server.Get("/api/hik/nvr/download", [nvr_controller](const httplib::Request& request, httplib::Response& response) {
         nvr_controller->download(request, response);
     });
 
