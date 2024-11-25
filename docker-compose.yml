@@ -112,6 +112,14 @@ services:
       - "/var/lib/minio/data2:/data2"
     networks:
       - app-net
+  
+  webrtc-streamer:
+    image: mpromonet/webrtc-streamer
+    container_name: webrtc-streamer
+    ports:
+      - "8000:8000"
+    networks:
+      - app-net
 
 networks:
   app-net:
