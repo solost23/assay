@@ -13,4 +13,5 @@ var (
 	importService   services.ImportService
 	textService     services.TextService
 	barriersService services.BarriersService
+	nvrService      services.NvrService
 )

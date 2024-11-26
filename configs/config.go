@@ -15,6 +15,7 @@ type ServerConfig struct {
 	StaticOSS    StaticOSSConfig  `mapstructure:"static_oss"`
 	DynamicOSS   DynamicOSSConfig `mapstructure:"dynamic_oss"`
 	Text         TextConfig       `mapstructure:"text"`
+	Hik          HikConfig        `mapstructure:"hik"`
 }
 
 type MySQLConfig struct {
@@ -72,4 +73,8 @@ type TextConfig struct {
 	Width  int    `mapstructure:"width"`
 	Height int    `mapstructure:"height"`
 	Url    string `mapstructure:"url"`
+}
+
+type HikConfig struct {
+	Url string `mapstructure:"url"`
 }

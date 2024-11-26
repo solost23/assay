@@ -27,6 +27,8 @@ func Register() *gin.Engine {
 		InitTextScreenRouter(apiGroup)
 		// 道闸
 		InitBarriersRouter(apiGroup)
+		// NVR
+		InitNvrRouter(apiGroup)
 	}
 	apiGroup.Use(
 		middlewares.JWTAuth(),

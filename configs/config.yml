@@ -51,4 +51,7 @@ text:
   width: 64
   height: 16
   url: "http://192.168.1.240:8084/command/y5c-524-01004"
+
+hik:
+  url: "app-hik:8082"
   

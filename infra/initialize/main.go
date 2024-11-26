@@ -6,6 +6,6 @@ func init() {
 	initMysql()
 	initRedis()
 	initMqtt()
-	initCat()
-	initMinio()
+	// initCat()
+	// initMinio()
 }
