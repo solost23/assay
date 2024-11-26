@@ -25,4 +25,4 @@ mkdir -p ${BUILD_DIR} \
         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
         $SOURCE_DIR \
     && make && mv ./${PROJECT} ../${PROJECT} \
-    # && rm -rf ${SOURCE_DIR}/build
+    && rm -rf ${SOURCE_DIR}/build
