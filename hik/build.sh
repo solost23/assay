@@ -4,7 +4,7 @@
 # ./jsoncpp_build.sh
 # ./muduo_build.sh
 # ./yamlcpp_build.sh
-pkgs=("cpp-httplib" "yaml-cpp-master" "spdlog" "json")
+pkgs=("httplib" "yaml" "spdlog" "json")
 for pkg in "${pkgs[@]}"; do 
     ./pkg_build.sh ${pkg}
 done 

@@ -1,0 +1,12 @@
+[submodule "hik/pkg/httplib"]
+	path = hik/pkg/httplib
+	url = git@github.com:yhirose/cpp-httplib.git
+[submodule "hik/pkg/json"]
+	path = hik/pkg/json
+	url = git@github.com:nlohmann/json.git
+[submodule "hik/pkg/spdlog"]
+	path = hik/pkg/spdlog
+	url = git@github.com:gabime/spdlog.git
+[submodule "hik/pkg/yaml"]
+	path = hik/pkg/yaml
+	url = git@github.com:jbeder/yaml-cpp.git
