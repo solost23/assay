@@ -12,8 +12,8 @@
 
 #include "HCNetSDK.h"
 
-#include "../configs/config.h"
-#include "../forms/nvr_f.h"
+#include "configs/config.h"
+#include "forms/nvr_f.h"
 
 class nvr_s
 {

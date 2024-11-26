@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../services/nvr_s.h"
+#include "services/nvr_s.h"
 
 class nvr_c
 {

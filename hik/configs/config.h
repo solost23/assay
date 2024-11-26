@@ -6,7 +6,7 @@
 #include "spdlog/spdlog.h"
 #include "yaml-cpp/yaml.h"
 
-#include "../util/error.h"
+#include "util/error.h"
 
 struct NvrConfig 
 {

@@ -7,7 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -I${CMAKE_SOURCE_DIR}/libs/include")
 
-link_directories(${CMAKE_SOURCE_DIR}/libs/lib)
+# 添加项目头文件找包目录
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+# 添加项目头文件找库目录
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/lib)
 
 add_executable(hik main.cpp configs/config.cpp controllers/nvr_c.cpp services/nvr_s.cpp util/error.cpp)
 
