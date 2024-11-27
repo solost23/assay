@@ -10,4 +10,4 @@ ffmpeg -i rtsp://admin:asdfghj1@192.168.1.70:554/Streaming/Channels/101 -c:v lib
 ffmpeg -i rtsp://admin:asdfghj1@192.168.1.111:554/Streaming/Channels/101 -c:v libx264 -preset veryfast -tune zerolatency -f flv rtmp://localhost:1935/live/stream-111
 ```
 
-上述方式延迟较高，最终采用webrtc-streamer 技术，后端已放入webrtc-streamer容器，前端暂未实现
+上述方式延迟较高，最终采用webrtc-streamer 技术, 已实现
