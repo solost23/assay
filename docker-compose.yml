@@ -10,9 +10,9 @@ services:
       - "1935:1935"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
-      - "/etc/nginx/nginx.conf:/etc/nginx/nginx.conf"
+      - "/etc/nginx/nginx-assay.conf:/etc/nginx/nginx.conf"
       - "./dist:/usr/share/nginx/html"
-      - "/var/log/nginx:/var/log/nginx"
+      - "/var/log/nginx-assay:/var/log/nginx"
       # 推流文件夹
       - "/var/share/nginx/html/hls:/var/share/nginx/html/hls"
     networks:
@@ -116,10 +116,9 @@ services:
   webrtc-streamer:
     image: mpromonet/webrtc-streamer
     container_name: webrtc-streamer
+    network_mode: host # 要采用主机网络模式，不然前端播不了
     ports:
       - "8000:8000"
-    networks:
-      - app-net
 
 networks:
   app-net:
