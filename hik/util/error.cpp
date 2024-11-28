@@ -1,7 +1,6 @@
 #include <iostream>
 #include "error.h"
 
-
 std::string error(Error err) {
     switch (err) {
         case Error::Nil:

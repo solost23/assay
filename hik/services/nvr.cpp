@@ -1,16 +1,11 @@
-#include "nvr_s.h"
+#include "nvr.h"
 
-nvr_s::nvr_s(Config config)
-{
-    this->config = config;
-}
-
-nvr_s::~nvr_s()
+NvrService::~NvrService()
 {
     spdlog::info("nvr_s object is being deleted");
 }
 
-void nvr_s::nvr_channel(const httplib::Request& request, httplib::Response& response)
+void NvrService::nvr_channel(const httplib::Request& request, httplib::Response& response)
 {
     NET_DVR_Init();
 
@@ -19,17 +14,17 @@ void nvr_s::nvr_channel(const httplib::Request& request, httplib::Response& resp
     NET_DVR_SetReconnect(10000, true);
 
     NET_DVR_DEVICEINFO_V30 deviceInfo{};
-    NvrConfig nvrConfig = config.nvr;
-    char* host = new char[nvrConfig.host.length() + 1]; strcpy(host, nvrConfig.host.c_str());
-    char* user = new char[nvrConfig.user.length() + 1]; strcpy(user, nvrConfig.user.c_str());
-    char* password = new char[nvrConfig.password.length() + 1]; strcpy(password, nvrConfig.password.c_str());
-    LONG userId = NET_DVR_Login_V30(
+    
+    char* host = new char[config.get_nvr_host().length() + 1]; strcpy(host, config.get_nvr_host().c_str());
+    char* user = new char[config.get_nvr_user().length() + 1]; strcpy(user, config.get_nvr_user().c_str());
+    char* password = new char[config.get_nvr_password().length() + 1]; strcpy(password, config.get_nvr_password().c_str());
+    LONG user_id = NET_DVR_Login_V30(
         host, 
-        nvrConfig.port, 
+        config.get_nvr_port(), 
         user, 
         password, 
         &deviceInfo);
-    if (userId < Error::Nil) {
+    if (user_id < Error::Nil) {
         NET_DVR_Cleanup();
         response.status = 200;
         response.set_content(error(Error::UserLoginFailed), "text/plain");
@@ -41,9 +36,9 @@ void nvr_s::nvr_channel(const httplib::Request& request, httplib::Response& resp
     DWORD bytesReturned = 0;
     ipcfg.dwSize = sizeof(NET_DVR_IPPARACFG_V40);
     int iGroupNo = 0;
-    bool resCode = NET_DVR_GetDVRConfig(userId, NET_DVR_GET_IPPARACFG_V40, iGroupNo, &ipcfg, sizeof(NET_DVR_IPPARACFG_V40), &bytesReturned);
+    bool resCode = NET_DVR_GetDVRConfig(user_id, NET_DVR_GET_IPPARACFG_V40, iGroupNo, &ipcfg, sizeof(NET_DVR_IPPARACFG_V40), &bytesReturned);
     if (!resCode) {
-        NET_DVR_Logout(userId);
+        NET_DVR_Logout(user_id);
         NET_DVR_Cleanup();
         response.status = 200;
         response.set_content(error(Error::DvrGetConfigFailed), "text/plain");
@@ -57,7 +52,7 @@ void nvr_s::nvr_channel(const httplib::Request& request, httplib::Response& resp
         bytesReturned = 0;
         channelInfo.dwSize = sizeof(NET_DVR_PICCFG_V30);
         int channelNum = i + ipcfg.dwStartDChan;
-        NET_DVR_GetDVRConfig(userId, NET_DVR_GET_PICCFG_V30, channelNum, &channelInfo,  sizeof(NET_DVR_PICCFG_V30), &bytesReturned);
+        NET_DVR_GetDVRConfig(user_id, NET_DVR_GET_PICCFG_V30, channelNum, &channelInfo,  sizeof(NET_DVR_PICCFG_V30), &bytesReturned);
 
         std::string chanName(reinterpret_cast<const char*>(channelInfo.sChanName));
         std::string username(reinterpret_cast<const char*>(ipcfg.struIPDevInfo[i].sUserName));
@@ -79,7 +74,7 @@ void nvr_s::nvr_channel(const httplib::Request& request, httplib::Response& resp
     res["data"] = records;
 
     // 释放 SDK 资源
-    NET_DVR_Logout(userId);
+    NET_DVR_Logout(user_id);
     NET_DVR_Cleanup();
 
     response.status = 200;
@@ -88,7 +83,7 @@ void nvr_s::nvr_channel(const httplib::Request& request, httplib::Response& resp
     return;
 }
 
-void nvr_s::nvr_download(const httplib::Request& request, httplib::Response& response, DownloadForm params) 
+void NvrService::nvr_download(const httplib::Request& request, httplib::Response& response, DownloadForm params) 
 {
     std::string filepath{};
     if (Error err = download(params, filepath); err != Error::Nil) {
@@ -115,7 +110,7 @@ void nvr_s::nvr_download(const httplib::Request& request, httplib::Response& res
     return;
 }
 
-Error nvr_s::download(DownloadForm& params, std::string& filepathR) 
+Error NvrService::download(DownloadForm& params, std::string& filepathR) 
 {
     NET_DVR_Init();
 
@@ -124,18 +119,17 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
     NET_DVR_SetReconnect(10000, true);
 
     NET_DVR_DEVICEINFO_V30 deviceInfo{};
-    NvrConfig nvrConfig = config.nvr;
-    char* host = new char[nvrConfig.host.length() + 1]; strcpy(host, nvrConfig.host.c_str());
-    char* user = new char[nvrConfig.user.length() + 1]; strcpy(user, nvrConfig.user.c_str());
-    char* password = new char[nvrConfig.password.length() + 1]; strcpy(password, nvrConfig.password.c_str());
-    LONG userId = NET_DVR_Login_V30(
+
+    char* host = new char[config.get_nvr_host().length() + 1]; strcpy(host, config.get_nvr_host().c_str());
+    char* user = new char[config.get_nvr_user().length() + 1]; strcpy(user, config.get_nvr_user().c_str());
+    char* password = new char[config.get_nvr_password().length() + 1]; strcpy(password, config.get_nvr_password().c_str());
+    LONG user_id = NET_DVR_Login_V30(
         host, 
-        nvrConfig.port, 
+        config.get_nvr_port(), 
         user, 
         password, 
         &deviceInfo);
-    if (userId < Error::Nil) {
-        spdlog::error(NET_DVR_GetLastError());
+    if (user_id < Error::Nil) {
         NET_DVR_Cleanup();
         return Error::UserLoginFailed;
     }
@@ -165,10 +159,10 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
     std::stringstream ss; ss << std::hex << hasher(now);
     std::string filepath = "/tmp/"+ss.str() + ".mp4";
     char* filename = new char[filepath.length() + 1]; strcpy(filename, filepath.c_str());
-    int hPlayback = NET_DVR_GetFileByTime_V40(userId, filename, &downloadCond);
+    int hPlayback = NET_DVR_GetFileByTime_V40(user_id, filename, &downloadCond);
     if (hPlayback < 0) {
         spdlog::error(error(Error::DvrGetFileByTimeV40Failed));
-        NET_DVR_Logout(userId);
+        NET_DVR_Logout(user_id);
         NET_DVR_Cleanup();
         return Error::DvrGetFileByTimeV40Failed;
     }
@@ -176,7 +170,7 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
     // 开始下载
     if (!NET_DVR_PlayBackControl_V40(hPlayback, NET_DVR_PLAYSTART, NULL, 0, NULL, NULL)) {
         spdlog::error(error(Error::PlaybackControlFailed));
-        NET_DVR_Logout(userId);
+        NET_DVR_Logout(user_id);
         NET_DVR_Cleanup();
         return Error::PlaybackControlFailed;
     }
@@ -191,26 +185,26 @@ Error nvr_s::download(DownloadForm& params, std::string& filepathR)
     if (!NET_DVR_StopGetFile(hPlayback))
     {
         spdlog::error(error(Error::FileStopGetFailed));
-        NET_DVR_Logout(userId);
+        NET_DVR_Logout(user_id);
         NET_DVR_Cleanup();
         return Error::FileStopGetFailed;
     }
     if (nPos < 0 || nPos>100)
     {
         spdlog::error(error(Error::FileDownloadFailed));
-        NET_DVR_Logout(userId);
+        NET_DVR_Logout(user_id);
         NET_DVR_Cleanup();
         return Error::FileDownloadFailed;
     }
     ss.clear();ss.str("");ss << nPos; 
     spdlog::info("Be downloading..." + ss.str() + "%");
-    NET_DVR_Logout(userId);
+    NET_DVR_Logout(user_id);
     NET_DVR_Cleanup();
     filepathR = filename;
     return Error::Nil;
 }
 
-Error nvr_s::current_time_str(std::string& now) 
+Error NvrService::current_time_str(std::string& now) 
 {
     std::time_t now_t = std::time(nullptr);
     char buf[100];

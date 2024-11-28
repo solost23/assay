@@ -1,16 +1,16 @@
 #pragma once
 
-#include "services/nvr_s.h"
+#include "services/nvr.h"
 
-class nvr_c
+class NvrController
 {
 private:
     Config config;
 
     Error parse(const httplib::Request& request, int& value, std::string field);
 public:
-    nvr_c(Config config);
-    ~nvr_c();
+    NvrController(const Config& conf): config(conf) {};
+    ~NvrController();
 
     // 通道列表
     void channel(const httplib::Request& request, httplib::Response& response);

@@ -8,30 +8,32 @@
 
 #include "util/error.h"
 
-struct NvrConfig 
+class Config
 {
-    std::string host;
-    int port;
-    std::string user;
-    std::string password;
-};
+    private:
+        struct NvrConfig
+        {
+            std::string host;
+            int port;
+            std::string user;
+            std::string password;
+        };
 
-struct Config 
-{
-    std::string name;
-    std::string version;
-    int port;
-    int thread;
-    NvrConfig nvr;
-};
+        std::string name;
+        std::string version;
+        int port;
+        int thread;
+        NvrConfig nvr;
+    public:
+        Config(std::string filepath);
 
-class config_s
-{
-private:
-    
-public:
-    Config config;
-
-    config_s(std::string path);
-    ~config_s();
+        std::string get_name();
+        std::string get_version();
+        int get_port();
+        int get_thread();
+        
+        std::string get_nvr_host();
+        int get_nvr_port();
+        std::string get_nvr_user();
+        std::string get_nvr_password();
 };

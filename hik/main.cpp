@@ -1,14 +1,14 @@
 #include <iostream>
 
-#include "controllers/nvr_c.h"
+#include "controllers/nvr.h"
 
 int main() {
     // 读取配置文件
-    config_s config = config_s("./configs/config.yml");
+    Config config{"./configs/config.yml"};
 
-    // 开启http服务
+    // // 开启http服务
     httplib::Server server;
-    nvr_c* nvr_controller = new nvr_c(config.config);
+    NvrController* nvr_controller = new NvrController(config);
 
     server.Get("/api/hik/nvr/channel", [nvr_controller](const httplib::Request& request, httplib::Response& response) {
         nvr_controller->channel(request, response);
@@ -17,9 +17,9 @@ int main() {
         nvr_controller->download(request, response);
     });
 
-    std::stringstream ss; ss << config.config.port;
+    std::stringstream ss; ss << config.get_port();
     spdlog::info("server start: " + ss.str());
-    server.listen("0.0.0.0", config.config.port, config.config.thread);
+    server.listen("0.0.0.0", config.get_port(), config.get_thread());
 
     spdlog::info("server stop");
     return Error::Nil;

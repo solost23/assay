@@ -13,7 +13,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 # 添加项目头文件找库目录
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/lib)
 
-add_executable(hik main.cpp configs/config.cpp controllers/nvr_c.cpp services/nvr_s.cpp util/error.cpp)
+add_executable(hik main.cpp configs/config.cpp controllers/nvr.cpp services/nvr.cpp util/error.cpp)
 
 find_library(hcnetsdkLIBRARY hcnetsdk HINTS ${HTYJ_PUBLIC_SOLUTION_ROOT_DIR}/libs/lib)
 if(hcnetsdkLIBRARY)

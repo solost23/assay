@@ -13,9 +13,9 @@
 #include "HCNetSDK.h"
 
 #include "configs/config.h"
-#include "forms/nvr_f.h"
+#include "forms/nvr.h"
 
-class nvr_s
+class NvrService
 {
 private:
     Config config;
@@ -23,8 +23,8 @@ private:
     Error download(DownloadForm&, std::string&);
     Error current_time_str(std::string& now);
 public:
-    nvr_s(Config config);
-    ~nvr_s();
+    NvrService(const Config& conf): config(conf) {};
+    ~NvrService();
 
     void nvr_channel(const httplib::Request& request, httplib::Response& response);
     void nvr_download(const httplib::Request& request, httplib::Response& response, DownloadForm params);
