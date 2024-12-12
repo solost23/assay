@@ -1,7 +1,9 @@
 #include <iostream>
 #include <thread>
+#include <chrono>
 #include <atomic>
 #include <csignal>
+#include <sstream>
 
 #include "controllers/nvr.h"
 
@@ -18,11 +20,11 @@ int main()
     std::thread http_thread(start);
     spdlog::info("HTTP server start. Press Ctrl+C to stop.");
 
-    while(running) {}
-
-    if (http_thread.joinable()) {
-        http_thread.join();
+    while(running) {
+        if (!running) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
+
     spdlog::info("HTTP server stoped.");
 
     return 0;
@@ -31,7 +33,10 @@ int main()
 void signaler(int sig)
 {
     running = false;
-    spdlog::info("Interrupt signal received");
+
+    std::ostringstream oss;
+    oss << "Interrupt signal ("; oss << sig; oss << ") received";
+    spdlog::info(oss.str());
 }
 
 void start()
