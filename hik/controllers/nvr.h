@@ -5,11 +5,11 @@
 class NvrController
 {
 private:
-    Config config;
+    std::shared_ptr<Config> config;
 
     Error parse(const httplib::Request& request, int& value, std::string field);
 public:
-    NvrController(const Config& conf): config(conf) {};
+    NvrController(const std::shared_ptr<Config> conf): config(conf) {};
     ~NvrController();
 
     // 通道列表

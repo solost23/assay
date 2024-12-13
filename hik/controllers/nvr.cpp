@@ -7,94 +7,33 @@ NvrController::~NvrController()
 
 void NvrController::channel(const httplib::Request& request, httplib::Response& response) 
 {
-    NvrService nvr_service = NvrService(config);
-    nvr_service.nvr_channel(request, response);
+    std::shared_ptr<NvrService> nvr_service = std::make_shared<NvrService>(this->config);
+    nvr_service->nvr_channel(request, response);
 }
 
 void NvrController::download(const httplib::Request& request, httplib::Response& response)
 {
     // 接收参数并打印
     DownloadForm params{};
-    if (Error err = parse(request, params.channel, "channel"); err != Error::Nil) {
+    if (!parse(request, params.channel, "channel") 
+    && !parse(request, params.channel, "startYear") && !parse(request, params.startTime.month, "startMonth") 
+    && !parse(request, params.startTime.day, "startDay")&& !parse(request, params.startTime.hour, "startHour") 
+    && !parse(request, params.startTime.minute, "startMinute") && !parse(request, params.startTime.second, "startSecond") 
+    && !parse(request, params.endTime.year, "endYear") && !parse(request, params.endTime.month, "endMonth") 
+    && !parse(request, params.endTime.day, "endDay") && !parse(request, params.endTime.hour, "endHour") 
+    && !parse(request, params.endTime.minute, "endMinute") && !parse(request, params.endTime.second, "endSecond")) 
+    {
         response.status = 200;
-        response.set_content(error(err) + ": channel", "text/plain");
-        return ;
-    }
-    if (Error err = parse(request, params.startTime.year, "startYear"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": startYear", "text/plain");
-        return ;
-    }
-    if (Error err = parse(request, params.startTime.month, "startMonth"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": startMonth", "text/plain");
-        return ;
-    }
-    if (Error err = parse(request, params.startTime.day, "startDay"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": startDay", "text/plain");
-        return ;
-    }
-    if (Error err = parse(request, params.startTime.hour, "startHour"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": startHour", "text/plain");
-        return ;
-    }
-    
-    if (Error err = parse(request, params.startTime.minute, "startMinute"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": startMinute", "text/plain");
-        return ;
-    }
-    
-    if (Error err = parse(request, params.startTime.second, "startSecond"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": startSecond", "text/plain");
-        return ;
-    }
-    
-    if (Error err = parse(request, params.endTime.year, "endYear"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": endYear", "text/plain");
-        return ;
-    }
-    
-    if (Error err = parse(request, params.endTime.month, "endMonth"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": endMonth", "text/plain");
-        return ;
-    }
-    
-    if (Error err = parse(request, params.endTime.day, "endDay"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": endDay", "text/plain");
-        return ;
-    }
-    
-    if (Error err = parse(request, params.endTime.hour, "endHour"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": endHour", "text/plain");
-        return ;
-    }
-    
-    if (Error err = parse(request, params.endTime.minute, "endMinute"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": endMinute", "text/plain");
-        return ;
-    }
-    
-    if (Error err = parse(request, params.endTime.second, "endSecond"); err != Error::Nil) {
-        response.status = 200;
-        response.set_content(error(err) + ": endSecond", "text/plain");
+        response.set_content("params valid", "text/plain");
         return ;
     }
 
-    NvrService nvr_service = NvrService(config);
-    nvr_service.nvr_download(request, response, params);
+    std::shared_ptr<NvrService> nvr_service = std::make_shared<NvrService>(this->config);
+    nvr_service->nvr_download(request, response, params);
     return;
 }
 
-Error NvrController::parse(const httplib::Request& request, int& value, std::string field) 
+inline Error NvrController::parse(const httplib::Request& request, int& value, std::string field) 
 {
     if (!request.has_param(field)) {
         return Error::BadRequest;

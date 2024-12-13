@@ -15,12 +15,12 @@ void NvrService::nvr_channel(const httplib::Request& request, httplib::Response&
 
     NET_DVR_DEVICEINFO_V30 deviceInfo{};
     
-    char* host = new char[config.get_nvr_host().length() + 1]; strcpy(host, config.get_nvr_host().c_str());
-    char* user = new char[config.get_nvr_user().length() + 1]; strcpy(user, config.get_nvr_user().c_str());
-    char* password = new char[config.get_nvr_password().length() + 1]; strcpy(password, config.get_nvr_password().c_str());
+    char* host = new char[config->get_nvr_host().length() + 1]; strcpy(host, config->get_nvr_host().c_str());
+    char* user = new char[config->get_nvr_user().length() + 1]; strcpy(user, config->get_nvr_user().c_str());
+    char* password = new char[config->get_nvr_password().length() + 1]; strcpy(password, config->get_nvr_password().c_str());
     LONG user_id = NET_DVR_Login_V30(
         host, 
-        config.get_nvr_port(), 
+        config->get_nvr_port(), 
         user, 
         password, 
         &deviceInfo);
@@ -120,12 +120,12 @@ Error NvrService::download(DownloadForm& params, std::string& filepathR)
 
     NET_DVR_DEVICEINFO_V30 deviceInfo{};
 
-    char* host = new char[config.get_nvr_host().length() + 1]; strcpy(host, config.get_nvr_host().c_str());
-    char* user = new char[config.get_nvr_user().length() + 1]; strcpy(user, config.get_nvr_user().c_str());
-    char* password = new char[config.get_nvr_password().length() + 1]; strcpy(password, config.get_nvr_password().c_str());
+    char* host = new char[config->get_nvr_host().length() + 1]; strcpy(host, config->get_nvr_host().c_str());
+    char* user = new char[config->get_nvr_user().length() + 1]; strcpy(user, config->get_nvr_user().c_str());
+    char* password = new char[config->get_nvr_password().length() + 1]; strcpy(password, config->get_nvr_password().c_str());
     LONG user_id = NET_DVR_Login_V30(
         host, 
-        config.get_nvr_port(), 
+        config->get_nvr_port(), 
         user, 
         password, 
         &deviceInfo);

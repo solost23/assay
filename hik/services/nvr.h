@@ -5,6 +5,7 @@
 #include <vector>
 #include <ctime>
 #include <sstream>
+#include <memory>
 
 #include "httplib.h"
 #include <nlohmann/json.hpp>
@@ -18,12 +19,12 @@
 class NvrService
 {
 private:
-    Config config;
+    std::shared_ptr<Config> config;
     
     Error download(DownloadForm&, std::string&);
     Error current_time_str(std::string& now);
 public:
-    NvrService(const Config& conf): config(conf) {};
+    NvrService(const std::shared_ptr<Config> conf): config(conf) {};
     ~NvrService();
 
     void nvr_channel(const httplib::Request& request, httplib::Response& response);
