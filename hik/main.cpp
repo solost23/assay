@@ -47,21 +47,21 @@ void start()
     std::shared_ptr<Config> config = std::make_shared<Config>(WEBCONFIGPATH);
 
     // 开启http服务
-    httplib::Server server;
+    std::shared_ptr<httplib::Server> server = std::make_shared<httplib::Server>();
 
     std::shared_ptr<NvrController> nvr_controller = std::make_shared<NvrController>(config);
 
-    server.Get("/api/hik/nvr/channel", [nvr_controller](const httplib::Request& request, httplib::Response& response) {
+    server->Get("/api/hik/nvr/channel", [nvr_controller](const httplib::Request& request, httplib::Response& response) {
         nvr_controller->channel(request, response);
     });
-    server.Get("/api/hik/nvr/download", [nvr_controller](const httplib::Request& request, httplib::Response& response) {
+    server->Get("/api/hik/nvr/download", [nvr_controller](const httplib::Request& request, httplib::Response& response) {
         nvr_controller->download(request, response);
     });
 
     std::stringstream ss; ss << config->get_port();
     spdlog::info("server start: " + ss.str());
 
-    server.listen("0.0.0.0", config->get_port(), config->get_thread());
+    server->listen("0.0.0.0", config->get_port(), config->get_thread());
 
     spdlog::info("server stop");
 }
